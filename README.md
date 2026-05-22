@@ -11,17 +11,28 @@
 
 ---
 
-## 2. Installation & Setup
+## 2. Installation & Setup / 설치 및 설정
 
-글타래로 (Geultaraero)는 환경에 따라 두 가지 설치/배포 옵션을 제공합니다.
+글타래로 (Geultaraero)는 사용 환경에 따라 최적의 설치 방식을 지원합니다. 호스트 에이전트(Antigravity, Cursor, Claude Code 등)의 채팅 패널에 아래의 프롬프트 중 하나를 복사하여 붙여넣으면 설치가 자동 진행됩니다.
+Geultaraero supports optimized installation methods based on your environment. Copy and paste one of the following prompts into your Host Agent (Antigravity, Cursor, Claude Code, etc.) chat panel to automate the setup.
 
-### Option 1: Node.js Orchestration Mode (권장)
-다중 페르소나의 병렬 처리 통제 및 세밀한 런타임 제어가 필요한 경우 CLI 엔진을 설치하여 구동합니다.
+### 📋 AI 에이전트용 복사/붙여넣기 설치 프롬프트 / AI Agent Prompts to Copy & Paste
 
-호스트 에이전트(Antigravity, Cursor 등)에 다음 프롬프트를 입력하여 설치를 자동화할 수 있습니다:
+#### 1️⃣ Option 1: Full System Auto-Installation / 풀 코어 전체 자동 설치
+> Use this prompt to install the full Node.js CLI engine (`glro`) or pre-compiled binaries along with the custom workspace rules.
+> Node.js CLI 엔진(`glro`) 또는 독립 실행형 바이너리를 컴퓨터에 구축하고, 이에 연동되는 에이전트 규칙 파일들까지 일괄 자동 구성하고자 하는 경우에 사용합니다.
 ```text
-Install and configure Geultaraero by following the instructions here:
+Install and configure the full Geultaraero system (including Node.js/binary installation and rule files setup) by following Part 1 (Priority 1) of the instructions here:
 https://raw.githubusercontent.com/WizMasia/Geultaraero/refs/heads/main/docs/AGENT_SETUP_GUIDE.md
+```
+
+#### 2️⃣ Option 2: Zero-Dependency Agent-Only Mode Setup / 무설치형 룰셋 단독 구성
+> Use this prompt to configure ONLY the agent rules (.agent/ and workspace rule files) without installing any separate Node.js package or engine binaries.
+> 별도의 Node.js 설치나 바이너리 파일 복사 없이, 순수하게 AI 에이전트가 개발 업무를 돕기 위한 룰셋(`.agent/` 폴더 및 전용 규칙 파일)만 워크스페이스 내에 즉시 구축하려는 경우에 사용합니다.
+```text
+Configure the Geultaraero system using the zero-dependency Agent-Only Mode (Priority 2) by following the instructions here:
+https://raw.githubusercontent.com/WizMasia/Geultaraero/refs/heads/main/docs/AGENT_SETUP_GUIDE.md
+Create the .agent/ directory and setup only the rule files for my AI IDE without installing any Node.js packages or binaries.
 ```
 
 #### 수동 설치 (Manual Setup)

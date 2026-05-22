@@ -1,6 +1,6 @@
 {
   "name": "geultaraero",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Geultaraero - CLI Orchestration for Agentic Report Writing",
   "main": "dist/index.js",
   "bin": {

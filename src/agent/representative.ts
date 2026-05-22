@@ -1,6 +1,7 @@
 import { BaseAgent } from './base';
 import { FileWatcher } from '../utils/file-watcher';
 import { Logger } from '../utils/logger';
+import { TokenLogger } from '../utils/token-logger';
 import * as path from 'path';
 
 export class RepresentativeAgent extends BaseAgent {
@@ -37,6 +38,13 @@ export class RepresentativeAgent extends BaseAgent {
       // 10분 대기 예시 (필요시 무한대)
       const result = await this.watcher.waitForStatus('current_status.md', ['Completed'], 600000); 
       Logger.agent(this.id, 'Received user feedback.');
+      
+      // 사용자 피드백(혹은 에이전트 개입) 완료 시 기재한 토큰 사용량 정보가 있다면 로깅을 기록합니다.
+      // If there is token usage information recorded by the host agent upon feedback completion, record the log.
+      if (result.frontmatter && result.frontmatter.token_usage) {
+        TokenLogger.logUsage(this.id, result.frontmatter.token_usage, this.workspaceDir);
+      }
+
       return result.content;
     } catch (error) {
       Logger.error(`Timeout or error while waiting for user: ${error}`);

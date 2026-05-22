@@ -3,6 +3,7 @@ import * as path from 'path';
 import { AgentMessageFrontmatter, writeMarkdownFile, readMarkdownFile, ParsedMarkdown } from '../utils/markdown-helper';
 import { FileWatcher } from '../utils/file-watcher';
 import { Logger } from '../utils/logger';
+import { TokenLogger } from '../utils/token-logger';
 
 export abstract class BaseAgent {
   public id: string;
@@ -85,6 +86,13 @@ export abstract class BaseAgent {
     const watcher = new FileWatcher(this.workspaceDir);
     try {
       const result = await watcher.waitForStatus('current_status.md', ['Completed'], timeoutMs);
+      
+      // 호스트 에이전트가 완료 시 기재한 토큰 사용량 정보가 있다면 로깅을 기록합니다.
+      // If there is token usage information recorded by the host agent upon completion, record the log.
+      if (result.frontmatter && result.frontmatter.token_usage) {
+        TokenLogger.logUsage(this.id, result.frontmatter.token_usage, this.workspaceDir);
+      }
+
       return result;
     } finally {
       watcher.close();

@@ -73,7 +73,7 @@ export abstract class BaseAgent {
     if (!fs.existsSync(receiverDir)) {
       fs.mkdirSync(receiverDir, { recursive: true });
     }
-    const fileName = `msg_${Date.now()}.md`;
+    const fileName = `msg_${this.id}_${Date.now()}.md`;
     writeMarkdownFile(path.join(receiverDir, fileName), frontmatter, content);
     Logger.agent(this.id, `Sent ${messageType} to ${receiverId}`);
   }

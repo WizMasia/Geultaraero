@@ -1,139 +1,82 @@
-<div align="center">
-  <h1>🚀 WizWriting Supporter</h1>
-  <p><b>마크다운 기반의 다중 에이전트(Multi-Agent) 리포트 자동 작성 오케스트레이터</b></p>
-</div>
+# WizWriting Supporter
 
-> [!WARNING]
-> 🚧 **현재 활발히 개발 중인 프로젝트입니다 (Pre-release Phase)** 🚧  
-> 핵심 코어 아키텍처는 완성되었으나, 세부 에이전트 프롬프트 튜닝 및 부가 기능들이 지속적으로 업데이트되고 있습니다. 예상치 못한 버그가 발생할 수 있으며, 배포된 바이너리는 `Pre-release` 목적으로 제공됩니다.
+**마크다운 기반 다중 에이전트(Multi-Agent) 리포트 자동 작성 오케스트레이터**
+
+> **Notice:** 본 프로젝트는 현재 Pre-release 단계입니다. 핵심 코어 아키텍처는 구현되었으나, 프롬프트 튜닝 및 부가 기능 업데이트가 진행 중입니다.
 
 ---
 
-## 💡 Overview
-WizWriting Supporter는 단순한 자동화 스크립트가 아닙니다. **대표, 탐색가, 작성가, 검토가, 교정가, 포맷터**로 구성된 5개의 독립된 AI 페르소나가 상호작용하며 높은 품질의 마크다운 보고서를 자동으로 작성하고 검토하는 오케스트레이션 시스템입니다. 
+## 1. Overview
+WizWriting Supporter는 대표, 탐색가, 작성가, 검토가, 교정가, 포맷터 등 5개의 독립된 AI 페르소나가 상호작용하여 마크다운 포맷의 보고서를 자동 작성 및 검토하는 오케스트레이션 시스템입니다. 
 
 ---
 
-## 🚀 Getting Started (설치 및 배포)
+## 2. Installation & Setup
 
-WizWriting Supporter는 사용자의 입맛에 맞춰 3가지 강력한 배포 옵션을 제공합니다.
+WizWriting Supporter는 환경에 따라 두 가지 설치/배포 옵션을 제공합니다.
 
-### 🌟 옵션 1: 제로 인스톨 에이전트 모드 (Agent-Native Mode) - **Default 추천!**
-이 저장소의 코드를 다운받거나 Node.js를 설치할 필요가 **전혀 없습니다.**
-당신의 빈 프로젝트 폴더 안에, 이 저장소 최상단에 있는 `.cursorrules` (또는 `CLAUDE.md`) 파일 하나만 그대로 복사해서 넣어두세요.
-> [기본 룰 파일(.cursorrules) 보러가기](https://raw.githubusercontent.com/WizMasia/WizWriting_Supporter/refs/heads/main/.cursorrules)
+### Option 1: Agent-Native Mode (권장)
+별도의 Node.js 환경이나 런타임 설치 없이, IDE 내장 에이전트를 활용하여 구동하는 방식입니다.
 
-이제 켜져 있는 에이전트에게 대화를 걸어보세요. 에이전트가 알아서 1인 다역(탐색가->작성가->평가자)을 수행하며 혼자서 보고서를 완성해 냅니다! 
-(에이전트는 샌드박스 룰에 의해 절대 당신의 현재 작업 폴더를 벗어나지 않습니다.)
+1. 빈 프로젝트 디렉토리를 생성합니다.
+2. 본 저장소의 `.cursorrules` (또는 `CLAUDE.md`) 파일을 복사하여 루트 디렉토리에 배치합니다.
+3. 호스트 에이전트를 호출하여 작업을 지시합니다. 에이전트가 단독으로 탐색, 작성, 검토 과정을 순차적으로 수행합니다.
+*(참고: 에이전트는 설정된 샌드박스 정책에 따라 현재 작업 디렉토리 외부의 파일에 접근하지 않습니다.)*
 
-### 🤖 옵션 2: Node.js 오케스트레이션 (Advanced Mode)
-더 강력한 병렬 처리 통제나 세밀한 다중 페르소나의 상호작용(CLI 엔진)이 필요하신가요? 그렇다면 호스트 에이전트에게 설치를 시키세요.
+### Option 2: Node.js Orchestration Mode (Advanced)
+다중 페르소나의 병렬 처리 통제 및 세밀한 런타임 제어가 필요한 경우 CLI 엔진을 설치하여 구동합니다.
 
-이 프롬프트를 당신의 호스트 에이전트(Antigravity, Cursor 등)의 채팅창에 붙여넣으세요:
-
+호스트 에이전트(Antigravity, Cursor 등)에 다음 프롬프트를 입력하여 설치를 자동화할 수 있습니다:
 ```text
 Install and configure WizWriting Supporter by following the instructions here:
 https://raw.githubusercontent.com/WizMasia/WizWriting_Supporter/refs/heads/main/docs/AGENT_SETUP_GUIDE.md
 ```
-당신은 팝콘이나 튀기며 기다리면 됩니다. 🍿
 
-### 👨‍💻 옵션 3: 사람을 위한 수동 설치 (Manual Option)
-OS(운영체제)에 따라 가장 안정적인 설치 방법을 선택하세요.
-
-**[macOS / Linux 사용자 - Node.js 소스 설치 권장]**
-터미널에 아래 스크립트 한 줄만 복사해서 붙여넣으세요.
+#### 수동 설치 (Manual Setup)
+**[macOS / Linux]**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/WizMasia/WizWriting_Supporter/main/install.sh | bash
 ```
-> ✨ **Smart Cleanup 지원:** 설치가 완료되면 시스템이 터미널 환경을 분석하여 현재 사용 중인 IDE(Cursor, Windsurf 등)를 자동 감지하고, 해당 에디터에 맞는 설정 파일 1개만 남긴 채 나머지를 깔끔하게 청소해 줍니다.
+> **Smart Cleanup:** 설치 스크립트는 실행 중인 터미널 환경을 분석하여 현재 사용 중인 IDE(Cursor, Windsurf 등)에 해당하는 설정 파일 1개만 남기고 불필요한 룰 파일들을 자동 삭제합니다.
 
-**[Windows 사용자 - 바이너리 릴리즈 권장]**
-Node.js 경로 설정이 까다롭다면, [Releases 페이지](https://github.com/WizMasia/WizWriting_Supporter/releases)에서 사전 컴파일된 `.exe` 바이너리 파일을 다운로드하여 실행하는 것을 강력히 추천합니다.
-
-> [!TIP]
-> **Node.js가 설치되어 있지 않나요?**
-> 설치 스크립트가 실행되려면 Node.js가 필요합니다. 터미널에 아래 명령어를 입력하여 빠르게 설치하세요!
-> - **Mac (Homebrew):** `brew install node`
-> - **Linux (Ubuntu/Debian):** `sudo apt update && sudo apt install nodejs npm`
-> - **Windows:** [Node.js 공식 홈페이지](https://nodejs.org/)에서 설치
+**[Windows]**
+[Releases 페이지](https://github.com/WizMasia/WizWriting_Supporter/releases)에서 사전 컴파일된 `.exe` 바이너리를 다운로드하여 실행하는 것을 권장합니다.
 
 ---
 
-## 🗑️ Uninstall (시스템 제거)
-설치한 시스템을 지우고 싶을 때도 복잡하게 터미널을 열 필요가 없습니다. 
-에이전트 채팅창에 이렇게만 입력하세요.
+## 3. Key Features
 
-> *"WizWriting Supporter를 내 컴퓨터에서 흔적도 없이 삭제해 줘. 가이드는 이거야: https://raw.githubusercontent.com/WizMasia/WizWriting_Supporter/refs/heads/main/docs/AGENT_SETUP_GUIDE.md"*
-
-**수동으로 지우려면:**
-터미널에서 아래 명령어들을 실행하세요.
-```bash
-npm rm -g wizwriting-supporter
-rm -rf ~/.wizwriting
-```
+- **Offline Survival Mode (망 분리 환경 지원):** 네트워크 연결이 단절되거나 외부 검색이 불가한 경우, 웹 검색을 중단하고 로컬 `input_materials/` 디렉토리 내의 문서를 기반으로 작업을 수행합니다.
+- **sLM Memory Optimization (Rolling Summary):** 로컬 모델 및 컨텍스트 한도가 제한된 환경을 위해 방대한 문서를 챕터 단위로 분할(Chunking)하고, 압축 요약(Rolling Summary)하여 메모리 초과를 방지합니다.
+- **Pre-Flight Interview UX:** 작업 개시 전 사용자에게 문서의 주제, 요구 포맷, 제약 조건 등을 사전 질의하여 요구사항을 구체화합니다.
+- **Auto-Tooling (의존성 자동 설치):** 작업 수행에 필요한 외부 파서나 패키지가 누락된 경우, 에이전트가 자체적으로 환경을 분석하고 필수 도구를 설치합니다.
+- **Score-based Loopback:** 검토가(Reviewer) 페르소나가 결과물에 부여한 점수가 기준점(80점) 미달일 경우, 시스템이 이전 단계로 피드백을 전달하여 재작업을 강제합니다.
 
 ---
 
-## ✨ Key Features (압도적인 오케스트레이션 능력)
-- 🛡️ **망 분리 & 오프라인 생존 (Offline Survival Mode):** 인터넷이 끊겨도 멈추지 않습니다. 로컬 `input_materials/` 폴더만을 100% 신뢰하여 끝까지 임무를 완수합니다. 보안이 엄격한 사내망/인트라넷에 최적화되어 있습니다.
-- 🧠 **sLM 및 저사양 메모리 최적화 (Rolling Summary):** VRAM이 부족하거나 컨텍스트 한도가 작은 로컬 모델(Gemma 등)을 위해 방대한 문서를 '챕터 단위 쪼개기(Chunking)' 및 '압축 요약(Rolling Summary)'으로 처리하여 기억 상실을 막습니다.
-- 🤝 **사전 인터뷰 UX (Pre-Flight Interview):** 시작하자마자 막무가내로 봇을 돌리지 않습니다. "주제는 무엇인가요? 예시 포맷이 있나요?" 라고 사용자에게 먼저 물어보는 인간 중심의 똑똑한 워크플로우를 가집니다.
-- 🌟 **제로 인스톨 라이트 모드 (Config-Only Lite Mode):** CLI 엔진 설치조차 부담스럽다면, 설정 파일 1개만 복붙하세요. 외부 런타임 없이 IDE 스스로 1인 다역(탐색->작성->검토)을 롤플레잉합니다.
-- **초자율형 에이전트 시스템 (Auto-Tooling):** 작업에 필요한 외부 도구(파서, 패키지)가 없다면 사용자 허락 없이 스스로 터미널을 열고 설치하여 기어코 임무를 완수합니다.
-- **점수 기반 자동 루프백 (Score-based Loopback):** 평가자(Reviewer)가 매긴 점수가 80점 미달일 경우, 코어 엔진이 스스로 이전 단계로 돌려보내 재작업을 강제합니다.
+## 4. Local Resource Parsing (`input_materials/`)
+
+WizWriting Supporter는 로컬 데이터 처리에 최적화되어 있습니다. 작업 루트 디렉토리에 `input_materials/` 폴더를 생성하고 참고 문서를 배치하면 에이전트가 이를 최우선으로 분석합니다.
+
+- **HWP/HWPX:** 파서를 자동 다운로드하여 텍스트를 추출합니다.
+- **PDF & Image:** 텍스트 추출이 불가능한 문서의 경우, 이미지를 분할(`pdf2image`)하고 OCR(`tesseract`)을 통해 변환하며, 필요시 Vision 모델을 통해 이미지를 직접 분석합니다.
+- **DOCX/XLSX:** 텍스트 및 표 데이터를 구조화하여 분석합니다.
 
 ---
 
-## 📁 킬러 피처: 지능형 로컬 자료 탐색 (`input_materials/`)
+## 5. Architecture
 
-인터넷 검색만 하는 뻔한 봇이 아닙니다. 이 프로젝트 루트에 있는 `input_materials/` 폴더를 열고 **여러분이 가진 그 어떤 파일이든 던져 넣어 보세요.** 
-에이전트는 작업 지시를 받으면 0순위로 이 폴더를 탐색합니다.
+### 5.1 Config-Only Mode (단일 롤플레잉 구조)
+외부 CLI 런타임 없이 `.cursorrules` (또는 `CLAUDE.md`) 프롬프트 파일만을 활용하여 워크플로우를 구성합니다. 내장 에이전트가 단일 컨텍스트 내에서 순차적으로 역할을 변경하며 작업을 완수합니다.
 
-> [!TIP]
-> **"PDF도, HWP도, 엑셀도 알아서 파싱합니다"**
-> - **HWP/HWPX:** 에이전트가 깃허브에서 파서를 찾아서 깔고 어떻게든 한글 문서의 글자를 빼냅니다.
-> - **PDF & 이미지:** 텍스트가 안 뽑히는 스캔본인가요? 스스로 `pdf2image`를 깔아 그림으로 쪼개고, OCR(`tesseract`)로 돌립니다. 그래도 안 되면 **멀티모달 Vision AI** 기능을 켜서 스스로 눈으로 보고 분석합니다!
-> - **엑셀, 워드(DOCX):** 표 데이터도 놓치지 않고 분석합니다.
-
-원하는 형식의 '보고서 예시 파일'을 2개 정도 던져두시면, 작성가(Writer) 에이전트가 그 예시 형식을 완벽하게 흉내 내서 글을 써냅니다!
+### 5.2 Full-CLI Mode (비동기 멀티 에이전트 구조)
+TypeScript 기반의 CLI 런타임 엔진(`agentic-writer`)이 마크다운 기반의 상태 파일(`.agent_workspace/`)을 통해 호스트 IDE와 통신합니다. 독립된 페르소나들이 각자의 지시서(`instruction.md`)에 따라 비동기적으로 작업을 수행하며, 엔진이 전체 상태를 조율합니다.
 
 ---
 
-## 🏗️ Architecture (투-트랙 시스템)
-WizWriting Supporter는 사용자의 환경 제약에 맞춰 **두 가지의 코어 아키텍처**를 유연하게 지원합니다.
+## 6. Configuration
 
-### 1. Full-CLI Mode (비동기 멀티 에이전트 오케스트레이션)
-- **작동 방식:** TypeScript로 작성된 CLI 런타임 엔진(`agentic-writer`)이 호스트 IDE와 마크다운 파일(`.agent_workspace/`)을 통해 통신합니다.
-- **특징:** 탐색가, 작성가, 비평가 등 명확히 분리된 5개의 독립된 AI 페르소나가 각자의 지시서(`instruction.md`)를 차례대로 받아 수행하며, 엔진이 이들의 상태(`current_status.md`)를 감시하고 다음 단계를 조율합니다.
-
-### 2. Config-Only Lite Mode (독립형 셀프 롤플레잉)
-- **작동 방식:** 외부 CLI 런타임 설치 없이, 오직 `.cursorrules` (또는 `CLAUDE.md`) 프롬프트 파일 하나에 모든 워크플로우를 압축해 놓은 구조입니다.
-- **특징:** IDE의 내장 에이전트가 스스로 1인 다역을 수행하며 메모리 내에서 탐색 -> 작성 -> 셀프 비평 및 수정(Loopback)까지 모두 단독으로 완수합니다. 완전한 제로 인스톨 환경을 구축합니다.
-
----
-
-## 🚀 Getting Started (설치 및 실행)
-
-WizWriting Supporter는 사용자의 편의를 위해 두 가지 강력한 배포 옵션을 제공합니다.
-
-### Option 1. 단일 실행 파일 다운로드 (가장 쉬운 방법)
-코딩 환경이 없더라도 누구나 1초 만에 실행할 수 있습니다.
-1. 우측의 **[Releases]** 탭으로 이동합니다.
-2. 본인의 운영체제에 맞는 파일(`WizWriting_Supporter-win.exe`, `macos`, `linux`)을 다운로드합니다.
-3. 원하는 폴더에 넣고 더블클릭하면 즉시 시스템이 구동됩니다.
-
-### Option 2. NPM 글로벌 패키지 설치 (개발자용)
-Node.js가 설치된 환경이라면 전역 터미널 명령어로 사용할 수 있습니다.
-```bash
-# 깃허브 리포지토리를 통해 전역 설치 (추후 npm 퍼블리시 시 패키지명으로 변경 가능)
-npm install -g https://github.com/WizMasia/WizWriting_Supporter.git
-
-# 실행
-agentic-writer
-```
-
-## 🛠️ Configuration
-모든 워크플로우와 에이전트의 페르소나는 `orchestration-config.yaml` 파일 단 1개로 제어됩니다. 이 파일에서 순차, 병렬 처리 및 반복 횟수를 자유자재로 설정할 수 있습니다.
+시스템의 워크플로우 및 에이전트 페르소나는 `orchestration-config.yaml` 파일로 제어됩니다.
 
 ```yaml
 version: "1.0"
@@ -143,46 +86,20 @@ agents:
   - id: "rep-01"
     role: "representative"
     persona: "전문 기획자"
-  # ... (자세한 설정은 예제 파일 참고)
 ```
 
 ---
 
-<div align="center">
-  <h2>🤖 AI 호스트 에이전트 완벽 호환 (Universal IDE Integration)</h2>
-  <p>WizWriting Supporter는 <b>Antigravity, Cursor, Windsurf, Opencode, 오픈클로, 헤르메스, Claude Code, Cline</b> 등 현존하는 거의 모든 최첨단 AI 에이전트와 결합할 때 200%의 진가를 발휘합니다. API Key 없이, 호스트 AI의 두뇌를 통제하여 완벽한 오토파일럿(Auto-pilot) 문서 작성을 경험해 보세요!</p>
-</div>
+## 7. Uninstallation
 
-### 🎯 1. 프로젝트 열기 및 룰 자동 적용
-1. 사용하시는 AI 에이전트/IDE 환경에서 이 프로젝트 폴더(`WizWriting_Supporter`)를 엽니다.
-2. 프로젝트 루트에 `.cursorrules`, `.windsurfrules`, `CLAUDE.md`, `.clinerules` 등의 글로벌 지침서가 이미 모두 세팅되어 있으므로, **AI가 이 프로젝트를 여는 순간 스스로 호스트 에이전트의 역할과 자가 툴 설치 권한을 깨닫게 됩니다.**
+터미널에서 다음 명령어를 실행하여 전역 패키지 및 워크스페이스를 제거합니다.
 
-### 🗣️ 2. 에이전트 가동 프롬프트 지시하기
-IDE의 챗(Chat) 창에 다음과 같이 **마법의 주문(프롬프트)** 을 입력하세요. (복사해서 붙여넣으세요!)
-
-> [!TIP]
-> **사용자 프롬프트 예시:**
-> *"지금부터 너는 WizWriting Supporter의 호스트 에이전트야. 내가 터미널에서 `npm start`를 실행하면 엔진이 가동될 거야. 너는 엔진이 `.agent_workspace/` 폴더 안에 만들어내는 `[n]_[에이전트명]_instruction.md` 지시서들을 실시간으로 읽고, 그 안의 페르소나에 빙의해서 업무(자료조사, 작성, 리뷰 등)를 수행해 줘. 
-> 업무를 완료할 때마다 각 에이전트 폴더에 있는 `current_status.md` 파일을 열고 `status: "completed"`로 변경한 뒤 `message`에 결과물 요약을 적어줘. 엔진이 다음 지시서를 주면 끝날 때까지 멈추지 말고 이 과정을 계속 반복해. 자, 터미널 실행 버튼 누른다!"*
-
-### 🚀 3. 시스템 가동!
-채팅창에 위 지시를 내린 직후, 하단의 터미널 창에 아래 명령어를 입력하고 엔터를 칩니다.
 ```bash
-# 옵션 1. (글로벌 설치 시)
-agentic-writer
-
-# 옵션 2. (소스코드 상태 시)
-npm start
+npm rm -g wizwriting-supporter
+rm -rf ~/.wizwriting
 ```
-
-### ✨ 4. 감상하기 (Popcorn Time) 🍿
-엔터를 치는 순간부터 당신은 아무것도 할 필요가 없습니다!
-1. **CLI 엔진**이 기획서를 짜고 첫 번째 에이전트(Explorer)의 지시서를 `.agent_workspace`에 뱉어냅니다.
-2. **IDE AI**가 지시서를 낚아채서 스스로 웹 검색을 하고 자료를 모읍니다. 완료되면 `current_status.md`를 업데이트합니다.
-3. **CLI 엔진**이 그걸 인식하고 다음 에이전트(Writer) 지시서를 뱉어냅니다.
-4. **IDE AI**가 글을 쓰고, Reviewer가 되어 비평하고, 점수가 낮으면 재작업하는 무한 루프가 **문서가 완성될 때까지 자동으로** 이어집니다!
 
 ---
 
-## 🤝 Contribution
-WizWriting Supporter는 누구나 참여할 수 있는 오픈소스 프로젝트입니다. 버그 리포트, PR, 새로운 에이전트 아이디어 등 모든 기여를 환영합니다!
+## 8. Contribution
+WizWriting Supporter는 오픈소스 프로젝트입니다. 버그 리포트 및 Pull Request를 통한 기여를 환영합니다.

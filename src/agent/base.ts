@@ -100,6 +100,86 @@ export abstract class BaseAgent {
   }
 
   /**
+   * 사용자 정의 보고서 가이드라인 파일을 로드하여 반환합니다.
+   * Loads and returns the user-defined report writing guidelines file.
+   * @returns 가이드라인 파일의 본문 내용 (없을 시 빈 문자열) / Content of the guidelines file (empty string if not found)
+   */
+  protected loadWritingGuide(): string {
+    const settingsPath = path.resolve(this.workspaceDir, '../.agent/settings.json');
+    let guideRelativePath = 'REPORT_WRITING_GUIDE.md';
+
+    if (fs.existsSync(settingsPath)) {
+      try {
+        const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+        if (settings.customGuidelinesPath) {
+          guideRelativePath = settings.customGuidelinesPath;
+        }
+      } catch (e) {
+        Logger.warn(`Failed to parse settings.json for guidelines path: ${e}`);
+      }
+    }
+
+    let guidePath = path.resolve(this.workspaceDir, '../.agent', guideRelativePath);
+
+    if (!fs.existsSync(guidePath)) {
+      guidePath = path.resolve(this.workspaceDir, '..', guideRelativePath);
+    }
+    if (!fs.existsSync(guidePath)) {
+      guidePath = path.resolve(this.workspaceDir, guideRelativePath);
+    }
+
+    if (fs.existsSync(guidePath)) {
+      try {
+        return fs.readFileSync(guidePath, 'utf-8');
+      } catch (error) {
+        Logger.warn(`Failed to read report writing guide file at ${guidePath}: ${error}`);
+      }
+    }
+
+    return '';
+  }
+
+  /**
+   * 한국어 맞춤법 가이드라인 파일을 로드하여 반환합니다.
+   * Loads and returns the Korean spelling guidelines file.
+   * @returns 맞춤법 가이드라인 파일의 본문 내용 (없을 시 빈 문자열) / Content of the spelling guidelines file (empty string if not found)
+   */
+  protected loadSpellingGuide(): string {
+    const settingsPath = path.resolve(this.workspaceDir, '../.agent/settings.json');
+    let spellingRelativePath = 'KOREAN_SPELLING_GUIDE.md';
+
+    if (fs.existsSync(settingsPath)) {
+      try {
+        const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+        if (settings.customSpellingPath) {
+          spellingRelativePath = settings.customSpellingPath;
+        }
+      } catch (e) {
+        Logger.warn(`Failed to parse settings.json for spelling path: ${e}`);
+      }
+    }
+
+    let spellingPath = path.resolve(this.workspaceDir, '../.agent', spellingRelativePath);
+
+    if (!fs.existsSync(spellingPath)) {
+      spellingPath = path.resolve(this.workspaceDir, '..', spellingRelativePath);
+    }
+    if (!fs.existsSync(spellingPath)) {
+      spellingPath = path.resolve(this.workspaceDir, spellingRelativePath);
+    }
+
+    if (fs.existsSync(spellingPath)) {
+      try {
+        return fs.readFileSync(spellingPath, 'utf-8');
+      } catch (error) {
+        Logger.warn(`Failed to read spelling guide file at ${spellingPath}: ${error}`);
+      }
+    }
+
+    return '';
+  }
+
+  /**
    * 에이전트의 메인 실행 로직 (하위 클래스에서 구현)
    */
   public abstract execute(instructionPath?: string): Promise<void>;

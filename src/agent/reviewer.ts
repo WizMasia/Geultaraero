@@ -14,7 +14,16 @@ export class ReviewerAgent extends RunnerAgent {
   }
 
   protected generatePrompt(instructionContent: string, toneGuidelines: string[]): string {
-    const criteriaList = this.criteria.map((c, i) => `${i + 1}. ${c}`).join('\n');
+    // 사용자 정의 가이드라인 문서를 감지하고 검토 기준을 보강합니다.
+    // Detect custom guidelines file and enhance review criteria.
+    const guideText = this.loadWritingGuide();
+    let criteriaList = this.criteria.map((c, i) => `${i + 1}. ${c}`).join('\n');
+
+    if (guideText) {
+      criteriaList += `\n5. 정책보고서 10대 핵심 요소 준수 여부 (10 Core Elements check: Goal Clarity, Problem Definition, Actions, etc.)
+6. 공공기관 표준 기호체계 및 들여쓰기 층위 정합성 (Hierarchical Bullets: ☐ -> ○ -> - -> • -> ※)
+7. 글쓰기 절대 규칙 준수 여부 (Writing Absolutes: Readability for a 14-year-old, 1-line title, 2-line lead, fact-only dry tone)`;
+    }
 
     return `
 # [AGENT INSTRUCTION: REVIEWER]

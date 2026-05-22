@@ -10,9 +10,53 @@
 ---
 
 ## 💡 Overview
-**WizWriting Supporter**는 고품질의 기술 문서, 시장 조사 보고서, 비즈니스 리포트를 작성하기 위해 **5가지의 전문 에이전트**들이 협동하는 강력한 CLI 기반 오케스트레이터 시스템입니다. 
+WizWriting Supporter는 단순한 자동화 스크립트가 아닙니다. **대표, 탐색가, 작성가, 검토가, 교정가, 포맷터**로 구성된 5개의 독립된 AI 페르소나가 상호작용하며 높은 품질의 마크다운 보고서를 자동으로 작성하고 검토하는 오케스트레이션 시스템입니다. 
 
-기존의 복잡한 API Key 세팅이나 서버 연동 없이, 사용자가 주로 사용하는 **AI IDE(Antigravity, Opencode 등)**의 강력한 지능을 호스트 에이전트로 활용하여 문서 작성 파이프라인을 통제합니다. 
+---
+
+## ⚡ Quick Install (이제 터미널을 열지 마세요)
+설정 파일을 복사하고 스크립트를 타이핑하다가 오타를 내는 시대는 지났습니다. 
+**진심으로, 에이전트한테 시키세요.** 어차피 이 툴은 에이전트와 함께 쓰는 시스템입니다!
+
+### 🤖 LLM 에이전트를 위한 설치 (Recommended)
+이 프롬프트를 당신의 호스트 에이전트(Antigravity, Cursor, Claude Code 등)의 채팅창에 그대로 붙여넣으세요:
+
+```text
+Install and configure WizWriting Supporter by following the instructions here:
+https://raw.githubusercontent.com/WizMasia/WizWriting_Supporter/refs/heads/main/docs/AGENT_SETUP_GUIDE.md
+```
+에이전트가 알아서 문서를 읽고 당신의 환경에 완벽하게 `agentic-writer` 명령어를 세팅해 줄 것입니다. 당신은 팝콘이나 튀기며 기다리면 됩니다. 🍿
+
+### 👨‍💻 사람을 위한 수동 설치 (Manual Option)
+에이전트를 못 믿으시겠다면... `oh-my-zsh` 처럼 터미널에 아래 스크립트 한 줄만 복사해서 붙여넣으세요.
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/WizMasia/WizWriting_Supporter/main/install.sh | bash
+```
+
+> [!TIP]
+> **Node.js가 설치되어 있지 않나요?**
+> 설치 스크립트가 실행되려면 Node.js가 필요합니다. 터미널에 아래 명령어를 입력하여 빠르게 설치하세요!
+> - **Mac (Homebrew):** `brew install node`
+> - **Linux (Ubuntu/Debian):** `sudo apt update && sudo apt install nodejs npm`
+> - **Windows:** [Node.js 공식 홈페이지](https://nodejs.org/)에서 설치
+
+---
+
+## 🗑️ Uninstall (시스템 제거)
+설치한 시스템을 지우고 싶을 때도 복잡하게 터미널을 열 필요가 없습니다. 
+에이전트 채팅창에 이렇게만 입력하세요.
+
+> *"WizWriting Supporter를 내 컴퓨터에서 흔적도 없이 삭제해 줘. 가이드는 이거야: https://raw.githubusercontent.com/WizMasia/WizWriting_Supporter/refs/heads/main/docs/AGENT_SETUP_GUIDE.md"*
+
+**수동으로 지우려면:**
+터미널에서 아래 명령어들을 실행하세요.
+```bash
+npm rm -g wizwriting-supporter
+rm -rf ~/.wizwriting
+```
+
+---
 
 ## ✨ Key Features
 - **호스트 AI 위임 방식 (Host-Agent Delegation):** 사용자에게 API Key를 요구하지 않고, 호스트 IDE의 AI를 적극 활용하여 작업을 수행하도록 정교한 마크다운 프롬프트 지시서(INSTRUCTION)를 발행합니다.

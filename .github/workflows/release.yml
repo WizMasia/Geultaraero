@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*' # v1.0.0 같은 태그 푸시될 때 발동
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -85,7 +85,9 @@ function cleanupRules(selectedIde) {
         workspaceDir: "./.agent_workspace",
         reviewThreshold: 80,
         maxIterations: 3,
-        enableOfflineMode: false
+        enableOfflineMode: false,
+        exportDir: "./export",
+        generateWorkSummary: false
       };
       fs.writeFileSync(settingsPath, JSON.stringify(defaultSettings, null, 2), 'utf8');
       console.log(`✅ Generated default configuration template: .agent/settings.json`);

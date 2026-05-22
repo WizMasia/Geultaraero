@@ -79,9 +79,14 @@ You can easily adjust agent behaviors by writing the following JSON values in th
   "workspaceDir": "./.workspace",  // Agent workspace directory
   "reviewThreshold": 80,           // Review acceptance threshold score (0~100)
   "maxIterations": 3,              // Maximum iterations for feedback loop
-  "enableOfflineMode": false       // Enable offline survival mode (boolean)
+  "enableOfflineMode": false,      // Enable offline survival mode (boolean)
+  "exportDir": "./export",         // Output folder path for the final reports (string)
+  "generateWorkSummary": false     // Whether to automatically compile agent logs and messages (boolean)
 }
 ```
+
+* **`exportDir`**: The target directory where the final completed reports are copied and preserved.
+* **`generateWorkSummary`**: If set to `true`, it automatically compiles the complete execution history, status summaries, and message archives of all agents into a unified markdown summary (`[report_name]_summary.md`) inside the `exportDir`. If set to `false`, the Representative agent will prompt you via chat at the end of the workflow to ask if you wish to generate the summary.
 
 ### 6.2. orchestration-config.yaml (Static Workflow)
 ```yaml

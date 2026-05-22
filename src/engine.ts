@@ -8,6 +8,7 @@ import { EditorAgent } from './agent/editor';
 import { FormatterAgent } from './agent/formatter';
 import { Logger } from './utils/logger';
 import { readMarkdownFile } from './utils/markdown-helper';
+import { TokenLogger } from './utils/token-logger';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -92,6 +93,7 @@ export class WorkflowEngine {
     }
 
     Logger.success('All workflow steps completed successfully.');
+    await this.postProcess();
     this.cleanup();
   }
 
@@ -141,6 +143,166 @@ export class WorkflowEngine {
   private cleanup(): void {
     if (this.repAgent) {
       this.repAgent.cleanup();
+    }
+  }
+
+  /**
+   * 워크플로우 성공 완료 후 후속 작업(토큰 로그파일 쓰기, 최종 보고서 export 복사, 요약 리포트 자동/수동 생성)을 진행합니다.
+   * Performs post-processing tasks after workflow completion (writing token log, copying final report to export, generating summary report).
+   */
+  private async postProcess(): Promise<void> {
+    const workspaceDir = this.config.global_settings.workspace_dir;
+    
+    // 1. 토큰 최종 보고서 파일 작성 (token_usage.log)
+    // 1. Write the final token usage log file (token_usage.log)
+    TokenLogger.writeFinalLog(workspaceDir);
+
+    // 2. 최종 산출물 복사 (data_paths 감지 및 복사)
+    // 2. Copy the final deliverables (detect and copy data_paths)
+    const exportDir = path.resolve(process.cwd(), this.config.global_settings.export_dir || './export');
+    
+    // 마지막 에이전트(주로 Formatter)의 상태 파일 찾기
+    // Find the state file of the last agent (usually Formatter)
+    let finalFiles: string[] = [];
+    const formatterAgent = this.config.agents.find(a => a.role === 'formatter');
+    const lastAgentId = formatterAgent ? formatterAgent.id : (this.config.agents[this.config.agents.length - 1]?.id);
+
+    if (lastAgentId) {
+      const statusPath = path.join(workspaceDir, lastAgentId, 'current_status.md');
+      if (fs.existsSync(statusPath)) {
+        try {
+          const { frontmatter } = readMarkdownFile(statusPath);
+          if (frontmatter.data_paths && Array.isArray(frontmatter.data_paths)) {
+            finalFiles = frontmatter.data_paths.map(p => path.resolve(workspaceDir, lastAgentId, p));
+          }
+        } catch (e: any) {
+          Logger.warn(`Failed to parse final agent status for exporting: ${e.message}`);
+        }
+      }
+    }
+
+    if (finalFiles.length > 0) {
+      if (!fs.existsSync(exportDir)) {
+        fs.mkdirSync(exportDir, { recursive: true });
+      }
+      finalFiles.forEach(file => {
+        if (fs.existsSync(file)) {
+          const dest = path.join(exportDir, path.basename(file));
+          fs.copyFileSync(file, dest);
+          Logger.success(`Copied final deliverable to export folder: ${dest}`);
+        }
+      });
+    } else {
+      Logger.warn('No final deliverables found in agent status metadata to export.');
+    }
+
+    // 3. 작업 요약 생성 결정 (자동 또는 수동 피드백 요청)
+    // 3. Determine whether to generate work summary (automatic or manual feedback request)
+    const generateSummary = this.config.global_settings.generate_work_summary === true;
+    let shouldGenerate = generateSummary;
+
+    if (!generateSummary && this.repAgent) {
+      // settings가 false인 경우 사용자에게 질문
+      // If settings are false, ask the user
+      const userResponse = await this.repAgent.waitForUserFeedback(
+        'All workflow steps completed. Do you want to generate a work summary report in the export folder? (Type "yes" or "y" to generate)'
+      );
+      const cleanedResponse = userResponse.trim().toLowerCase();
+      if (cleanedResponse === 'yes' || cleanedResponse === 'y') {
+        shouldGenerate = true;
+      }
+    }
+
+    if (shouldGenerate) {
+      // 보고서 이름 결정 (첫 번째 복사된 파일명 베이스, 없으면 기본명)
+      // Determine summary report filename based on first copied file
+      let baseName = 'work_summary';
+      if (finalFiles.length > 0) {
+        const ext = path.extname(finalFiles[0]);
+        baseName = path.basename(finalFiles[0], ext) + '_summary';
+      } else {
+        if (!fs.existsSync(exportDir)) {
+          fs.mkdirSync(exportDir, { recursive: true });
+        }
+      }
+      const summaryReportPath = path.join(exportDir, `${baseName}.md`);
+      
+      // 요약 정보 수집 및 작성
+      // Collect and write summary information
+      this.generateSummaryReport(summaryReportPath);
+    }
+  }
+
+  /**
+   * 에이전트 상태 파일 및 상세 대화 로그를 취합하여 최종 요약 보고서를 작성합니다.
+   * Compiles agent status files and message history to write the final summary report.
+   * @param outputPath 저장될 요약 보고서 마크다운 경로 / Path to write the summary report markdown
+   */
+  private generateSummaryReport(outputPath: string): void {
+    const workspaceDir = this.config.global_settings.workspace_dir;
+    let report = `# 글타래로 (Geultaraero) 작업 요약 보고서 (Work Summary Report)\n\n`;
+    report += `**생성 일시 (Generated At):** ${new Date().toISOString()}\n\n`;
+    report += `---\n\n`;
+    report += `## 1. 에이전트별 작업 이력 (Agent Execution History)\n\n`;
+
+    this.config.agents.forEach(agent => {
+      const statusPath = path.join(workspaceDir, agent.id, 'current_status.md');
+      report += `### 🤖 ${agent.id} (${agent.role})\n`;
+      report += `- **Persona:** ${agent.persona}\n`;
+
+      if (fs.existsSync(statusPath)) {
+        try {
+          const { frontmatter, content } = readMarkdownFile(statusPath);
+          report += `- **Status:** ${frontmatter.status}\n`;
+          report += `- **Completed Time:** ${frontmatter.timestamp || 'N/A'}\n`;
+          if (frontmatter.token_usage) {
+            report += `- **Token Usage:** ${frontmatter.token_usage.total_tokens || 0} tokens\n`;
+          }
+          report += `\n**작업 요약 (Work Details):**\n\`\`\`markdown\n${content}\n\`\`\`\n`;
+        } catch (e: any) {
+          report += `*(상태 파싱 실패 / Failed to parse status)*\n`;
+        }
+      } else {
+        report += `*(상태 파일 없음 / No status file found)*\n`;
+      }
+      report += `\n`;
+    });
+
+    report += `---\n\n`;
+    report += `## 2. 에이전트 간 상세 메시지 송수신 내역 (Detailed Messages History)\n\n`;
+
+    let hasMessages = false;
+    this.config.agents.forEach(agent => {
+      const agentDir = path.join(workspaceDir, agent.id);
+      if (fs.existsSync(agentDir)) {
+        const files = fs.readdirSync(agentDir);
+        // msg_로 시작하는 파일 수집
+        // Collect files starting with msg_
+        const msgFiles = files.filter(f => f.startsWith('msg_') && f.endsWith('.md')).sort();
+        if (msgFiles.length > 0) {
+          hasMessages = true;
+          report += `### ✉️ ${agent.id} 에이전트 수신 메시지 (Received Messages)\n\n`;
+          msgFiles.forEach(file => {
+            try {
+              const { frontmatter, content } = readMarkdownFile(path.join(agentDir, file));
+              report += `#### [${frontmatter.message_type}] From: ${frontmatter.sender} -> To: ${frontmatter.receiver || agent.id}\n`;
+              report += `- **Time:** ${frontmatter.timestamp}\n`;
+              report += `\n**Message Content:**\n${content}\n\n`;
+            } catch (e) {}
+          });
+        }
+      }
+    });
+
+    if (!hasMessages) {
+      report += `*(송수신된 개별 메시지가 없습니다 / No individual messages were routed)*\n`;
+    }
+
+    try {
+      fs.writeFileSync(outputPath, report, 'utf-8');
+      Logger.success(`Work summary report successfully created at: ${outputPath}`);
+    } catch (e: any) {
+      Logger.error(`Failed to generate work summary report: ${e.message}`);
     }
   }
 }

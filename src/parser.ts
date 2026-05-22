@@ -9,6 +9,8 @@ export interface UserSettings {
   reviewThreshold?: number;
   maxIterations?: number;
   enableOfflineMode?: boolean;
+  exportDir?: string;
+  generateWorkSummary?: boolean;
   [key: string]: any;
 }
 
@@ -33,6 +35,8 @@ export interface OrchestrationConfig {
   global_settings: {
     workspace_dir: string;
     language: string;
+    export_dir?: string;
+    generate_work_summary?: boolean;
     [key: string]: any;
   };
   agents: AgentConfig[];
@@ -94,6 +98,12 @@ export class ConfigParser {
       }
       if (settings.enableOfflineMode !== undefined) {
         config.global_settings.enable_offline_mode = settings.enableOfflineMode;
+      }
+      if (settings.exportDir) {
+        config.global_settings.export_dir = settings.exportDir;
+      }
+      if (settings.generateWorkSummary !== undefined) {
+        config.global_settings.generate_work_summary = settings.generateWorkSummary;
       }
 
       // 2. workflow의 피드백 루프 단계 설정 오버라이드 / Override feedback loop step configurations in the workflow

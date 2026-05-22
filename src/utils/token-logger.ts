@@ -96,4 +96,65 @@ export class TokenLogger {
       `\x1b[35m[TOKEN TOTAL]\x1b[0m Accumulated: \x1b[32m${summary.total_accumulated.total_tokens.toLocaleString()}\x1b[0m tokens`
     );
   }
+
+  /**
+   * 전체 워크플로우 완료 시 최종 토큰 소모 내역을 사람이 읽기 편한 로그 파일(token_usage.log)로 저장합니다.
+   * At the end of the entire workflow, writes the final token usage report to a human-readable log file (token_usage.log).
+   * @param workspaceDir 워크스페이스 디렉토리 경로 / Workspace directory path
+   */
+  public static writeFinalLog(workspaceDir: string): void {
+    const summaryPath = path.join(workspaceDir, 'token_usage_summary.json');
+    const logPath = path.join(workspaceDir, 'token_usage.log');
+
+    if (!fs.existsSync(summaryPath)) {
+      Logger.warn(`Cannot write final token log: ${summaryPath} does not exist.`);
+      return;
+    }
+
+    try {
+      const fileContent = fs.readFileSync(summaryPath, 'utf-8');
+      const summary = JSON.parse(fileContent) as TokenUsageSummary;
+
+      // 에이전트별 사용량 계산
+      // Calculate usage by agent
+      const agentBreakdowns: { [agentId: string]: TokenUsage } = {};
+      summary.history.forEach(entry => {
+        if (!agentBreakdowns[entry.agentId]) {
+          agentBreakdowns[entry.agentId] = { prompt_tokens: 0, completion_tokens: 0, total_tokens: 0 };
+        }
+        agentBreakdowns[entry.agentId].prompt_tokens += entry.usage.prompt_tokens;
+        agentBreakdowns[entry.agentId].completion_tokens += entry.usage.completion_tokens;
+        agentBreakdowns[entry.agentId].total_tokens += entry.usage.total_tokens;
+      });
+
+      const now = new Date().toISOString();
+      let logContent = `==================================================\n`;
+      logContent += `Geultaraero Token Usage Report\n`;
+      logContent += `Date: ${now}\n`;
+      logContent += `==================================================\n`;
+      logContent += `Total Accumulated Tokens: ${summary.total_accumulated.total_tokens.toLocaleString()} tokens\n`;
+      logContent += `- Prompt Tokens: ${summary.total_accumulated.prompt_tokens.toLocaleString()} tokens\n`;
+      logContent += `- Completion Tokens: ${summary.total_accumulated.completion_tokens.toLocaleString()} tokens\n\n`;
+      logContent += `--------------------------------------------------\n`;
+      logContent += `Agent Breakdowns:\n`;
+
+      Object.keys(agentBreakdowns).forEach(agentId => {
+        const usage = agentBreakdowns[agentId];
+        logContent += `- ${agentId}: ${usage.total_tokens.toLocaleString()} tokens `;
+        logContent += `(Prompt: ${usage.prompt_tokens.toLocaleString()} / Completion: ${usage.completion_tokens.toLocaleString()})\n`;
+      });
+      logContent += `==================================================\n`;
+
+      fs.writeFileSync(logPath, logContent, 'utf-8');
+      Logger.success(`Final token usage log recorded at: ${logPath}`);
+
+      // 최종 통계 콘솔 요약 출력
+      // Log final statistics summary to console
+      console.log(`\n\x1b[35m[TOKEN FINAL REPORT]\x1b[0m`);
+      console.log(`- Total: \x1b[32m${summary.total_accumulated.total_tokens.toLocaleString()}\x1b[0m tokens`);
+      console.log(`- Log written to: ${logPath}\n`);
+    } catch (e: any) {
+      Logger.error(`Failed to write final token log: ${e.message}`);
+    }
+  }
 }

@@ -68,24 +68,35 @@ function cleanupRules(selectedIde) {
   }
   const agentContent = fs.readFileSync(agentMdPath, 'utf8');
 
-  // 2. .agent 폴더 생성 및 공통 .agent/AGENT.md 쓰기 / Create .agent directory and write common .agent/AGENT.md
+  // 2. .agent 폴더 생성 및 공통 .agent/AGENT.md 쓰기 (이용 가능 여부 체크) / Create .agent directory and write common .agent/AGENT.md (and check if it's available)
+  let canUseAgentDir = false;
   try {
     if (!fs.existsSync(agentDir)) {
       fs.mkdirSync(agentDir, { recursive: true });
     }
     fs.writeFileSync(path.join(agentDir, 'AGENT.md'), agentContent, 'utf8');
     console.log(`✅ Generated neutral rule file: .agent/AGENT.md`);
+    canUseAgentDir = true; // .agent 폴더 이용 가능 / .agent folder is available
   } catch (e) {
     console.error(`❌ Failed to create .agent directory or write AGENT.md: ${e.message}`);
   }
 
   // 3. 각 에이전트/IDE에 대응하는 파일 쓰기 / Write corresponding rule file for each agent/IDE
   try {
-    // 루트 레벨 파일 생성 (Cursor, Windsurf, Cline 등 레거시 도구용)
+    // 만일 .agent 폴더를 이용할 수 있는 경우 루트에 설치하는 설정을 후순위로 처리하여 .agent 폴더 내에 생성하고 루트 생성은 건너뜀
+    // If the .agent folder is available, install config files inside .agent/ and make root installation a lower priority (omit or fallback)
     keepList.forEach((filename) => {
-      const targetPath = path.join(rootDir, filename);
-      fs.writeFileSync(targetPath, agentContent, 'utf8');
-      console.log(`✅ Generated root rule file: ${filename}`);
+      if (canUseAgentDir) {
+        // 1순위: .agent 폴더 내에 설치 / Priority 1: Install inside .agent/ folder
+        const targetPath = path.join(agentDir, filename);
+        fs.writeFileSync(targetPath, agentContent, 'utf8');
+        console.log(`✅ Generated rule file inside .agent: .agent/${filename}`);
+      } else {
+        // 2순위 (후순위): .agent 폴더 이용이 불가능할 경우에만 fallback으로 루트에 설치 / Priority 2 (Fallback): Install in root only when .agent is unavailable
+        const targetPath = path.join(rootDir, filename);
+        fs.writeFileSync(targetPath, agentContent, 'utf8');
+        console.log(`✅ Generated root rule file (fallback): ${filename}`);
+      }
     });
 
     // Antigravity 특화 설정 / Special configuration for Antigravity
@@ -117,14 +128,19 @@ function cleanupRules(selectedIde) {
 
   // 4. 활성화되지 않은 다른 규칙 파일 청소 / Clean up inactive rule files
   ALL_GENERATED_FILES.forEach((filename) => {
-    if (!keepList.includes(filename)) {
+    // 만약 .agent 폴더를 사용할 수 있는 경우라면, 루트 경로에 있는 '모든' 생성 가능했던 규칙 파일들을 청소해야 함.
+    // (이전에는 keepList에 있는 파일은 루트에 유지했었으나, 이제는 이 역시 .agent 내부로 들어갔으므로 루트에서 지워야 함)
+    // If .agent directory is used, we should clean up all generated files from the root directory since they are now located in .agent/
+    const shouldKeepInRoot = !canUseAgentDir && keepList.includes(filename);
+
+    if (!shouldKeepInRoot) {
       const filePath = path.join(rootDir, filename);
       if (fs.existsSync(filePath)) {
         try {
           fs.unlinkSync(filePath);
-          console.log(`🗑️  Deleted: ${filename}`);
+          console.log(`🗑️  Deleted from root: ${filename}`);
         } catch (e) {
-          console.error(`Failed to delete ${filename}: ${e.message}`);
+          console.error(`Failed to delete ${filename} from root: ${e.message}`);
         }
       }
     }

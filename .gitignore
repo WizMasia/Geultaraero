@@ -7,3 +7,16 @@ dist/
 *.pkg
 coverage/
 .DS_Store
+
+# Auto-generated Agent Rules
+.cursorrules
+.clinerules
+.windsurfrules
+CLAUDE.md
+AI_INSTRUCTIONS.md
+Antigravity.md
+.agent/
+Hermes.md
+SOUL.md
+AGENTS.md
+.codex/

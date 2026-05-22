@@ -15,20 +15,7 @@
 
 글타래로 (Geultaraero)는 환경에 따라 두 가지 설치/배포 옵션을 제공합니다.
 
-### Option 1: Agent-Native Mode (권장)
-별도의 Node.js 환경이나 런타임 설치 없이, IDE 내장 에이전트를 활용하여 구동하는 방식입니다.
-
-1. 빈 프로젝트 디렉토리를 생성합니다.
-2. 본 저장소의 `.cursorrules` (또는 `CLAUDE.md`) 파일을 복사하여 루트 디렉토리에 배치합니다.
-3. 호스트 에이전트를 호출하여 작업을 지시합니다. 에이전트가 단독으로 탐색, 작성, 검토 과정을 순차적으로 수행합니다.
-*(참고: 에이전트는 설정된 샌드박스 정책에 따라 현재 작업 디렉토리 외부의 파일에 접근하지 않습니다.)*
-
-#### [Antigravity IDE 구동 예시]
-1. Antigravity IDE에서 빈 워크스페이스를 오픈합니다.
-2. 루트 경로에 `.cursorrules` 파일을 위치시킵니다. (Antigravity는 해당 글로벌 룰 파일을 자동으로 인식합니다.)
-3. 채팅 패널에서 *"보고서 작성을 시작해 줘"* 라고 입력하면, 시스템이 룰을 상속받아 자동으로 오케스트레이션을 진행합니다.
-
-### Option 2: Node.js Orchestration Mode (Advanced)
+### Option 1: Node.js Orchestration Mode (권장)
 다중 페르소나의 병렬 처리 통제 및 세밀한 런타임 제어가 필요한 경우 CLI 엔진을 설치하여 구동합니다.
 
 호스트 에이전트(Antigravity, Cursor 등)에 다음 프롬프트를 입력하여 설치를 자동화할 수 있습니다:
@@ -42,10 +29,31 @@ https://raw.githubusercontent.com/WizMasia/Geultaraero/refs/heads/main/docs/AGEN
 ```bash
 curl -fsSL https://raw.githubusercontent.com/WizMasia/Geultaraero/main/install.sh | bash
 ```
-> **Smart Cleanup:** 설치 스크립트는 실행 중인 터미널 환경을 분석하여 현재 사용 중인 IDE(Cursor, Windsurf 등)에 해당하는 설정 파일 1개만 남기고 불필요한 룰 파일들을 자동 삭제합니다.
+> **Smart Cleanup:** 설치 스크립트(및 `npm install`) 실행 시 사용 중인 터미널 환경을 분석하여 현재 IDE에 맞는 설정 파일 1개만 남기고 불필요한 규칙 파일들을 정리하며, 프로젝트 내 `.agent/` 폴더를 생성하여 공통 에이전트 설정(`AGENT.md`)을 자동 동기화합니다.
 
 **[Windows]**
 [Releases 페이지](https://github.com/WizMasia/Geultaraero/releases)에서 사전 컴파일된 `.exe` 바이너리를 다운로드하여 실행하는 것을 권장합니다.
+
+### Option 2: Agent-Native Mode (Alternative)
+별도의 Node.js 환경이나 런타임 설치 없이, IDE 내장 에이전트를 활용하여 구동하는 방식입니다.
+
+1. 빈 프로젝트 디렉토리를 생성합니다.
+2. 프로젝트 내에 `.agent/` 디렉토리를 생성하거나 루트 디렉토리에 해당 에이전트 전용 규칙 파일을 배치합니다:
+   * **Antigravity / Antigravity IDE**: 루트에 `Antigravity.md` 혹은 `.agent/AGENT.md` / `.agent/Antigravity.md` 배치
+   * **Claude Code**: 루트에 `CLAUDE.md` 배치
+   * **Open Code**: 루트에 `AGENT.md` 혹은 `.agent/AGENT.md` 배치
+   * **Hermes Agent**: 루트에 `Hermes.md` 및 `SOUL.md` 배치
+   * **Codex**: 루트에 `AGENTS.md` 혹은 `.codex/AGENTS.md` 배치
+   * **Cursor**: 루트에 `.cursorrules` 배치
+   * **Windsurf**: 루트에 `.windsurfrules` 배치
+   * **Cline**: 루트에 `.clinerules` 배치
+3. 호스트 에이전트를 호출하여 작업을 지시합니다. 에이전트가 단독으로 탐색, 작성, 검토 과정을 순차적으로 수행합니다.
+*(참고: 에이전트는 설정된 샌드박스 정책에 따라 현재 작업 디렉토리 외부의 파일에 접근하지 않습니다.)*
+
+#### [구동 예시]
+1. 사용하는 에이전트/IDE에서 빈 워크스페이스를 오픈합니다.
+2. 설치 스크립트 실행 또는 규칙 파일을 매핑에 맞춰 생성/위치시킵니다.
+3. 채팅 패널에서 *"보고서 작성을 시작해 줘"* 라고 입력하면, 에이전트가 규칙을 상속받아 자동으로 오케스트레이션을 진행합니다.
 
 ---
 
@@ -71,11 +79,11 @@ curl -fsSL https://raw.githubusercontent.com/WizMasia/Geultaraero/main/install.s
 
 ## 5. Architecture
 
-### 5.1 Config-Only Mode (단일 롤플레잉 구조)
-외부 CLI 런타임 없이 `.cursorrules` (또는 `CLAUDE.md`) 프롬프트 파일만을 활용하여 워크플로우를 구성합니다. 내장 에이전트가 단일 컨텍스트 내에서 순차적으로 역할을 변경하며 작업을 완수합니다.
-
-### 5.2 Full-CLI Mode (비동기 멀티 에이전트 구조)
+### 5.1 Full-CLI Mode (비동기 멀티 에이전트 구조)
 TypeScript 기반의 CLI 런타임 엔진(`glro`)이 마크다운 기반의 상태 파일(`.agent_workspace/`)을 통해 호스트 IDE와 통신합니다. 독립된 페르소나들이 각자의 지시서(`instruction.md`)에 따라 비동기적으로 작업을 수행하며, 엔진이 전체 상태를 조율합니다.
+
+### 5.2 Config-Only Mode (단일 롤플레잉 구조)
+외부 CLI 런타임 없이 `AGENT.md`(사용자의 IDE 규칙 파일명으로 복사/연동됨) 프롬프트 파일만을 활용하여 워크플로우를 구성합니다. 내장 에이전트가 단일 컨텍스트 내에서 순차적으로 역할을 변경하며 작업을 완수합니다.
 
 ---
 

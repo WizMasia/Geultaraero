@@ -1,10 +1,10 @@
 {
-  "name": "agentic_report_writing_supporter",
+  "name": "geultaraero",
   "version": "1.0.0",
-  "description": "Agentic Report Writing Supporter - CLI Orchestration",
+  "description": "Geultaraero - CLI Orchestration for Agentic Report Writing",
   "main": "dist/index.js",
   "bin": {
-    "agentic-writer": "./dist/index.js"
+    "glro": "./dist/index.js"
   },
   "directories": {
     "doc": "docs"

@@ -30,7 +30,7 @@ function detectIDE() {
 
 function cleanupRules(selectedIde) {
   const fileToKeep = RULES[selectedIde] || RULES['generic'];
-  console.log(`\n🧹 [WizWriting Supporter] Cleaning up environment for: ${selectedIde.toUpperCase()}`);
+  console.log(`\n🧹 [글타래로 (Geultaraero)] Cleaning up environment for: ${selectedIde.toUpperCase()}`);
   console.log(`✅ Keeping rule file: ${fileToKeep}`);
 
   const rootDir = process.cwd();
@@ -57,7 +57,7 @@ async function askUser() {
     output: process.stdout
   });
 
-  console.log('\n🤖 [WizWriting Supporter Setup]');
+  console.log('\n🤖 [글타래로 (Geultaraero) Setup]');
   console.log('We could not automatically detect your AI IDE.');
   console.log('To clean up unnecessary rule files, please select your IDE:');
   console.log('1) Antigravity / Antigravity IDE');

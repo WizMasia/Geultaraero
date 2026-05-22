@@ -40,7 +40,7 @@ Create the .agent/ directory and setup only the rule files for my AI IDE without
 
 - **Offline Survival Mode (Network-Disconnected Support):** If network access is cut or external search is unavailable, the agent stops web searching and relies strictly on documents in the local `input_materials/` directory.
 - **sLM Memory Optimization (Rolling Summary):** For environments with limited context window sizes or small local models, long documents are divided into chunks and summarized incrementally (Rolling Summary) to avoid Out-Of-Memory (OOM) issues.
-- **Pre-Flight Interview UX:** Before initiating report generation, the agent conducts an interview with the user to clarify the topic, target format, constraints, and requirements.
+- **Pre-Flight Interview & Planning UX:** Before initiating report generation, the agent conducts an interview with the user to clarify requirements, and the Representative agent drafts a "Research & Structure Plan" for user validation before initiating the research.
 - **Auto-Tooling (Dependency Auto-Installation):** If external parsers or tools needed for processing are missing, the agent analyzes the local system environment and installs the required packages autonomously.
 - **Score-based Loopback:** If the score assigned to the output by the Reviewer persona falls below the threshold (80 points by default), the system passes feedback back to the previous steps to force rework.
 

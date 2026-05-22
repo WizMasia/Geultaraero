@@ -53,7 +53,7 @@ curl -fsSL https://raw.githubusercontent.com/WizMasia/Geultaraero/main/install.s
 
 - **Offline Survival Mode (망 분리 환경 지원):** 네트워크 연결이 단절되거나 외부 검색이 불가한 경우, 웹 검색을 중단하고 로컬 `input_materials/` 디렉토리 내의 문서를 기반으로 보고서 작성을 이어 나갑니다.
 - **sLM Memory Optimization (Rolling Summary):** 로컬 모델 및 컨텍스트 한도가 제한된 환경을 위해 방대한 문서를 챕터 단위로 분할(Chunking)하고, 압축 요약(Rolling Summary)하여 메모리 초과(OOM)를 방지합니다.
-- **Pre-Flight Interview UX:** 작업 개시 전 사용자에게 문서의 주제, 요구 포맷, 제약 조건 등을 사전 질의하여 요구사항을 완벽하게 구체화합니다.
+- **Pre-Flight Interview & Planning UX:** 작업 개시 전 사용자와 인터뷰를 통해 요구사항을 구체화하고, 대표(Representative) 에이전트가 "자료 조사 및 보고서 구조 계획서(Research & Structure Plan)"를 기획하여 사용자 승인을 거친 뒤 조사를 개시합니다.
 - **Auto-Tooling (의존성 자동 설치):** 작업 수행에 필요한 외부 파서나 패키지가 누락된 경우, 에이전트가 자체적으로 환경을 분석하고 필수 도구를 자동으로 설치합니다.
 - **Score-based Loopback (환류 제어):** 검토가(Reviewer) 페르소나가 결과물에 부여한 점수가 기준점(80점) 미달일 경우, 시스템이 이전 단계로 피드백을 전달하여 재작업을 강제합니다.
 

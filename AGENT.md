@@ -40,7 +40,23 @@ Before writing anything, scan the `input_materials/` folder in this workspace. I
 **CRITICAL**: When extracting data from non-plain-text files (PDF, HWP, DOCX, Images), you MUST strictly follow the "Intelligent File Parsing & Extraction Strategies" described in `docs/AGENT_MANUAL.md`.
 
 ## 🔄 4. Default Mode: The Self-Orchestration Loop
-Once the interview is complete, follow these three phases in order:
+Once the interview is complete, follow these three phases in order.
+
+### 📂 Standalone File-Based Cooperation Rule (단독 모드 파일 기반 협업 규칙)
+- **State Recording Requirement (기록 의무)**: Even in Standalone/Agent-Only Mode, when you transition between roles (e.g., Explorer -> Writer -> Reviewer) to deliver results or feedbacks, you must **NEVER** keep the communication solely in your memory. You MUST write a markdown message file inside the `workspaceDir` (default: `./.workspace`, fallback `./.agent_workspace`).
+  * 2번 단독 모드(Standalone) 수행 중 각 역할로 전환하여 결과물이나 피드백을 전달할 때, 단순히 메모리 전환만 하지 말고 반드시 지정된 `workspaceDir` 내에 마크다운 통신 파일을 생성해야 합니다.
+- **Filename Specification (파일명 규격)**: Save files using the format: `[sender_role]_[timestamp_YYYYMMDD_HHMMSS].md` (e.g., `explorer_20260523_173000.md`, `writer_20260523_173510.md`, `reviewer_20260523_174020.md`).
+  * 파일명은 `[보낸역할]_[타임스탬프_YYYYMMDD_HHMMSS].md` 포맷으로 명명하여 저장합니다.
+- **Required Frontmatter Structure (필수 프론트매터 규격)**: Every generated markdown file must start with a YAML frontmatter containing the following fields:
+  ```yaml
+  sender: [sender_role] # e.g. explorer, writer, reviewer
+  receiver: [receiver_role_or_All] # e.g. writer, reviewer, explorer, All
+  timestamp: [ISO 8601 or YYYY-MM-DD HH:mm:ss]
+  message_type: [ANALYSIS_REPORT | DRAFT | FEEDBACK]
+  status: [Completed | Pending]
+  ```
+- **Context Loading (컨텍스트 로드)**: Before executing the next phase, the acting agent must scan the workspace directory, locate and read the latest message file from the previous agent, and integrate it into its context.
+  * 다음 역할을 수행하는 에이전트는 해당 디렉토리 내에 보존된 이전 단계 에이전트들의 메시지 파일을 탐색하여 내용을 로드한 다음 협업을 이어 나가야 합니다.
 
 ### Phase 1: 🔍 Explorer Mode
 - **Action:** Gather information. First, check your network status. If you are offline or web search fails, switch to "Offline Survival Mode" and rely 100% on parsing the local files in `input_materials/`.

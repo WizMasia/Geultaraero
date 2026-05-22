@@ -32,10 +32,10 @@ Please evaluate the document based on the following criteria:
 ${criteriaList}
 
 ## Action Required
-1. Thoroughly read the target document.
-2. Write a detailed critique (Feedback Report) addressing each criterion.
-3. Assign a total score out of 100 based on the quality.
-4. Once completed, save your critique as a NEW markdown file in the workspace (e.g., \`review_feedback_v1.md\`).
+1. Thoroughly read the target document with an **extremely strict and critical eye**. Do not be generous with your scoring.
+2. Write a detailed critique (Feedback Report) addressing each criterion. For each criterion, you MUST provide explicit reasons and evidence from the text justifying your evaluation.
+3. Assign a total score out of 100 based on the absolute quality. Deduct points relentlessly for logical flaws, lack of evidence, or poor readability.
+4. Once completed, save your detailed critique as a NEW markdown file in the workspace (e.g., \`review_feedback_v1.md\`).
 5. Finally, update the Reviewer's \`current_status.md\` file:
    - Change \`status\` to "Completed"
    - **IMPORTANT**: Set the \`score\` frontmatter field to your assigned integer score (e.g., \`score: 85\`).

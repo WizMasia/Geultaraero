@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.agent_workspace/
+*.log
+.env
+*.exe
+*.pkg
+coverage/
+.DS_Store

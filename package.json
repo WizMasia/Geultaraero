@@ -1,0 +1,43 @@
+{
+  "name": "agentic_report_writing_supporter",
+  "version": "1.0.0",
+  "description": "Agentic Report Writing Supporter - CLI Orchestration",
+  "main": "dist/index.js",
+  "bin": {
+    "agentic-writer": "./dist/index.js"
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:bin": "pkg .",
+    "start": "ts-node src/index.ts orchestration-config.yaml",
+    "test": "jest"
+  },
+  "pkg": {
+    "scripts": "dist/**/*.js",
+    "targets": [
+      "node18-macos-x64",
+      "node18-win-x64",
+      "node18-linux-x64"
+    ]
+  },
+  "dependencies": {
+    "chokidar": "^3.6.0",
+    "js-yaml": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.14",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^22.10.1",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}

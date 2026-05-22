@@ -68,7 +68,7 @@ function cleanupRules(selectedIde) {
   }
   const agentContent = fs.readFileSync(agentMdPath, 'utf8');
 
-  // 2. .agent 폴더 생성 및 공통 .agent/AGENT.md 쓰기 (이용 가능 여부 체크) / Create .agent directory and write common .agent/AGENT.md (and check if it's available)
+  // 2. .agent 폴더 생성 및 공통 .agent/AGENT.md 및 settings.json 쓰기 (이용 가능 여부 체크) / Create .agent directory and write common .agent/AGENT.md & settings.json (and check if it's available)
   let canUseAgentDir = false;
   try {
     if (!fs.existsSync(agentDir)) {
@@ -76,9 +76,24 @@ function cleanupRules(selectedIde) {
     }
     fs.writeFileSync(path.join(agentDir, 'AGENT.md'), agentContent, 'utf8');
     console.log(`✅ Generated neutral rule file: .agent/AGENT.md`);
+
+    // 기본 settings.json 설정 템플릿 생성 / Generate default settings.json configuration template
+    const settingsPath = path.join(agentDir, 'settings.json');
+    if (!fs.existsSync(settingsPath)) {
+      const defaultSettings = {
+        language: "ko",
+        workspaceDir: "./.agent_workspace",
+        reviewThreshold: 80,
+        maxIterations: 3,
+        enableOfflineMode: false
+      };
+      fs.writeFileSync(settingsPath, JSON.stringify(defaultSettings, null, 2), 'utf8');
+      console.log(`✅ Generated default configuration template: .agent/settings.json`);
+    }
+
     canUseAgentDir = true; // .agent 폴더 이용 가능 / .agent folder is available
   } catch (e) {
-    console.error(`❌ Failed to create .agent directory or write AGENT.md: ${e.message}`);
+    console.error(`❌ Failed to create .agent directory or write setup files: ${e.message}`);
   }
 
   // 3. 각 에이전트/IDE에 대응하는 파일 쓰기 / Write corresponding rule file for each agent/IDE

@@ -4,6 +4,7 @@ const readline = require('readline');
 
 // 지원하는 룰 파일 목록과 각각을 대변하는 대표 파일 하나
 const RULES = {
+  antigravity: '.cursorrules', // Antigravity는 호환성이 뛰어나 범용 룰 파일 지원
   cursor: '.cursorrules',
   windsurf: '.windsurfrules',
   cline: '.clinerules',
@@ -12,6 +13,9 @@ const RULES = {
 };
 
 function detectIDE() {
+  if (process.env.ANTIGRAVITY || process.env.ANTIGRAVITY_IDE_VERSION) {
+    return 'antigravity';
+  }
   if (process.env.CURSOR_VERSION || process.env.CURSOR_CLIENT_ID) {
     return 'cursor';
   }
@@ -56,20 +60,20 @@ async function askUser() {
   console.log('\n🤖 [WizWriting Supporter Setup]');
   console.log('We could not automatically detect your AI IDE.');
   console.log('To clean up unnecessary rule files, please select your IDE:');
-  console.log('1) Cursor');
-  console.log('2) Windsurf');
-  console.log('3) Claude Code');
-  console.log('4) Cline');
+  console.log('1) Antigravity / Antigravity IDE');
+  console.log('2) Cursor');
+  console.log('3) Windsurf');
+  console.log('4) Claude Code / Cline');
   console.log('5) Other / Keep all');
 
   return new Promise((resolve) => {
     rl.question('\nEnter a number (1-5): ', (answer) => {
       rl.close();
       const choice = answer.trim();
-      if (choice === '1') resolve('cursor');
-      else if (choice === '2') resolve('windsurf');
-      else if (choice === '3') resolve('claude');
-      else if (choice === '4') resolve('cline');
+      if (choice === '1') resolve('antigravity');
+      else if (choice === '2') resolve('cursor');
+      else if (choice === '3') resolve('windsurf');
+      else if (choice === '4') resolve('claude');
       else resolve('keep_all');
     });
   });

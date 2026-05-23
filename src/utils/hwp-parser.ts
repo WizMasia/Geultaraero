@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { runRhwpCommand } from './rhwp-runner';
 import { unzip } from './zip-helper';
+import { DocumentParser } from './document-parser';
 
 /**
  * Parses an HWP file using rhwp CLI.
@@ -149,3 +150,22 @@ function extractTextFromXml(xml: string): string {
     .filter(line => line.length > 0)
     .join('\n\n');
 }
+
+/**
+ * DocumentParser implementation for HWP and HWPX files.
+ * HWP 및 HWPX 파일을 위한 DocumentParser 구현체입니다.
+ */
+export class HwpParser implements DocumentParser {
+  readonly supportedExtensions = ['.hwp', '.hwpx'];
+
+  public async parse(filePath: string): Promise<string> {
+    const ext = path.extname(filePath).toLowerCase();
+    if (ext === '.hwp') {
+      return parseHwp(filePath);
+    } else if (ext === '.hwpx') {
+      return parseHwpx(filePath);
+    }
+    throw new Error(`Unsupported extension for HwpParser: ${ext}`);
+  }
+}
+

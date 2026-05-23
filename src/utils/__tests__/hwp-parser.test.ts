@@ -51,3 +51,20 @@ describe('hwp-parser tests / hwp-parser 테스트', () => {
     expect(text).toContain('두 번째 문단입니다.');
   });
 });
+
+import { ParserFactory } from '../document-parser';
+import { HwpParser } from '../hwp-parser';
+
+describe('HwpParser via Factory integration / 팩토리 연동 테스트', () => {
+  beforeAll(() => {
+    ParserFactory.registerParser(new HwpParser());
+  });
+
+  it('should be registered to factory and support .hwp and .hwpx / 팩토리에 등록되어 HWP/HWPX를 처리해야 함', () => {
+    const parser = ParserFactory.getParser('dummy.hwp');
+    expect(parser).toBeInstanceOf(HwpParser);
+    expect(parser.supportedExtensions).toContain('.hwp');
+    expect(parser.supportedExtensions).toContain('.hwpx');
+  });
+});
+

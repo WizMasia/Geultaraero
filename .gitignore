@@ -36,4 +36,5 @@ bin/
 # Temp directories for testing & runtime / 테스트 및 런타임 임시 디렉토리
 .tmp_jest/
 .test_*/
+tmp_hwpx/
 export/

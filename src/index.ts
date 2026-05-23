@@ -4,9 +4,20 @@ import * as path from 'path';
 import { ConfigParser } from './parser';
 import { WorkflowEngine } from './engine';
 import { Logger } from './utils/logger';
+import { ParserFactory } from './utils/document-parser';
+import { HwpParser } from './utils/hwp-parser';
+import { ImageParser } from './utils/image-parser';
+import { PdfParser } from './utils/pdf-parser';
 
 async function main() {
   Logger.info('Initializing Agentic Report Writing Supporter CLI...');
+
+  // Register all document parsers for global use
+  // 전역에서 사용할 모든 문서 파서들을 팩토리에 등록합니다.
+  ParserFactory.registerParser(new HwpParser());
+  ParserFactory.registerParser(new ImageParser());
+  ParserFactory.registerParser(new PdfParser());
+
 
   // 1. 설정 파일 경로 확인 (인자로 받거나 기본값)
   const args = process.argv.slice(2);

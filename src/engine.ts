@@ -1,7 +1,9 @@
 import { OrchestrationConfig, StepConfig } from './parser';
+import { BaseAgent } from './agent/base';
 import { RepresentativeAgent } from './agent/representative';
 import { RunnerAgent } from './agent/runner';
 import { ExplorerAgent } from './agent/explorer';
+import { ParserAgent } from './agent/parser';
 import { WriterAgent } from './agent/writer';
 import { ReviewerAgent } from './agent/reviewer';
 import { EditorAgent } from './agent/editor';
@@ -15,7 +17,7 @@ import * as path from 'path';
 export class WorkflowEngine {
   private config: OrchestrationConfig;
   private repAgent?: RepresentativeAgent;
-  private runners: Map<string, RunnerAgent> = new Map();
+  private runners: Map<string, BaseAgent> = new Map();
   private retryCounts: Map<number, number> = new Map();
 
   constructor(config: OrchestrationConfig) {
@@ -29,8 +31,11 @@ export class WorkflowEngine {
       if (agentConf.role === 'representative') {
         this.repAgent = new RepresentativeAgent(agentConf.id, agentConf.persona, workspaceDir);
       } else {
-        let runner: RunnerAgent;
+        let runner: BaseAgent;
         switch (agentConf.role) {
+          case 'parser':
+            runner = new ParserAgent(agentConf.id, agentConf.role, agentConf.persona, workspaceDir);
+            break;
           case 'explorer':
             runner = new ExplorerAgent(agentConf.id, agentConf.role, agentConf.persona, workspaceDir);
             break;

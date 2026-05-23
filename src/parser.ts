@@ -16,7 +16,7 @@ export interface UserSettings {
 
 export interface AgentConfig {
   id: string;
-  role: 'representative' | 'explorer' | 'writer' | 'reviewer' | 'editor' | 'formatter';
+  role: 'representative' | 'explorer' | 'writer' | 'reviewer' | 'editor' | 'formatter' | 'parser';
   persona: string;
   [key: string]: any;
 }

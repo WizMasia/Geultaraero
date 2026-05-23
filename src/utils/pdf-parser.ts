@@ -4,6 +4,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import { TempHelper } from './temp-helper';
 
 const execFileAsync = promisify(execFile);
 
@@ -121,8 +122,7 @@ export class PdfParser implements DocumentParser {
 
     // B. Slice pages as PNG images and invoke OCR/Vision Parser
     // B. 페이지를 PNG 이미지 파일들로 쪼갠 후 OCR/비전 파서 루프 적용
-    const tempDirName = `tmp_pdf_parse_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-    const tempExtractPath = path.join(process.cwd(), '.agent_workspace', 'temp', tempDirName);
+    const tempExtractPath = TempHelper.createTempDir('tmp_pdf_parse');
     if (!fs.existsSync(tempExtractPath)) {
       fs.mkdirSync(tempExtractPath, { recursive: true });
     }

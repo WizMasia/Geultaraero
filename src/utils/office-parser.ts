@@ -2,6 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { DocumentParser } from './document-parser';
 import { unzip } from './zip-helper';
+import { TempHelper } from './temp-helper';
 
 /**
  * Helper to unescape XML entities.
@@ -42,10 +43,9 @@ export class OfficeParser implements DocumentParser {
   public async parse(filePath: string): Promise<string> {
     const ext = path.extname(filePath).toLowerCase();
     
-    // Create a unique temporary directory inside the workspace
-    // 워크스페이스 내에 고유한 임시 디렉토리를 생성합니다.
-    const tempDirName = `.temp_office_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
-    const tempDir = path.join(process.cwd(), tempDirName);
+    // Create a unique temporary directory using TempHelper
+    // 임시 디렉토리 헬퍼를 사용하여 고유한 임시 디렉토리를 생성합니다.
+    const tempDir = TempHelper.createTempDir('tmp_office');
 
     try {
       // Unzip the office file to the temporary directory

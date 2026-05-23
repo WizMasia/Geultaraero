@@ -3,6 +3,7 @@ import * as path from 'path';
 import { runRhwpCommand } from './rhwp-runner';
 import { unzip } from './zip-helper';
 import { DocumentParser } from './document-parser';
+import { TempHelper } from './temp-helper';
 
 /**
  * Parses an HWP file using rhwp CLI.
@@ -36,10 +37,9 @@ export async function parseHwpx(filePath: string): Promise<string> {
     throw new Error(`File not found: ${absolutePath}`);
   }
 
-  // Define unique temp directory within the workspace
-  // 워크스페이스 내에 고유한 임시 디렉토리를 정의합니다.
-  const tempDirName = `tmp_hwpx_parse_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const tempExtractPath = path.join(process.cwd(), '.agent_workspace', 'temp', tempDirName);
+  // Define unique temp directory using centralized TempHelper
+  // 중앙 임시 디렉토리 헬퍼를 사용하여 고유한 임시 디렉토리를 정의합니다.
+  const tempExtractPath = TempHelper.createTempDir('tmp_hwpx_parse');
 
   try {
     // Attempt local unzip and XML parsing

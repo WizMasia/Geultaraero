@@ -135,7 +135,7 @@ export class ParserAgent extends BaseAgent {
 
     // 4. Publish Completed status with references to the output files
     // 4. 최종 파싱된 결과 마크다운 파일들의 위치와 함께 Completed 상태를 최종 발행합니다.
-    this.publishStatus('Completed', 'STATUS_UPDATE', `Successfully parsed ${parsedFiles.length} source document(s).`, {
+    this.publishStatus('Completed', 'STATUS_UPDATE', `Successfully parsed ${parsedFiles.length} source document(s).\n\n${skillInstruction}`, {
       data_paths: parsedFiles,
     });
   }

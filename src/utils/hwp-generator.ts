@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { zip, unzip } from './zip-helper';
+import { TempHelper } from './temp-helper';
 
 /**
  * Generates an HWPX file from a template by replacing Content/section0.xml with the given content.
@@ -19,10 +20,9 @@ export async function createHwpxFromTemplate(outputPath: string, content: string
     await ensureBaseTemplate(templatePath);
   }
 
-  // Create temporary extraction directory within workspace
-  // 워크스페이스 내에 임시 압축 해제 폴더를 생성합니다.
-  const tempDirName = `tmp_hwpx_gen_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  const tempExtractPath = path.join(process.cwd(), '.agent_workspace', 'temp', tempDirName);
+  // Create temporary extraction directory using TempHelper
+  // 임시 디렉토리 헬퍼를 사용하여 임시 압축 해제 폴더를 생성합니다.
+  const tempExtractPath = TempHelper.createTempDir('tmp_hwpx_gen');
 
   try {
     // Unzip the base template to the temp directory
@@ -100,10 +100,9 @@ async function ensureBaseTemplate(templatePath: string): Promise<void> {
     fs.mkdirSync(templateDir, { recursive: true });
   }
 
-  // Create temporary structure directory
-  // 템플릿 생성을 위한 임시 구조 폴더를 만듭니다.
-  const tempDirName = `tmp_base_tmpl_${Date.now()}`;
-  const tempStructurePath = path.join(process.cwd(), '.agent_workspace', 'temp', tempDirName);
+  // Create temporary structure directory using TempHelper
+  // 임시 디렉토리 헬퍼를 사용하여 템플릿 생성을 위한 임시 구조 폴더를 만듭니다.
+  const tempStructurePath = TempHelper.createTempDir('tmp_base_tmpl');
   
   try {
     fs.mkdirSync(tempStructurePath, { recursive: true });

@@ -33,8 +33,9 @@ Configure the Geultaraero system using the zero-dependency Agent-Only Mode (Prio
 https://raw.githubusercontent.com/WizMasia/Geultaraero/refs/heads/main/docs/AGENT_SETUP_GUIDE.md
 Create the .agent/ directory and setup only the rule files for my AI IDE without installing any Node.js packages or binaries.
 ```
-> ⚠️ **Warning:** 
-> Since Option 2 (Agent-Only Mode) does not configure local binaries or the Node.js execution engine on your machine, local HWP/HWPX parsing and template generation features (via `rhwp` CLI integration) are unavailable. To utilize these features locally and offline, please configure the full core engine via **Option 1**.
+> ⚠️ **CRITICAL WARNING (Option 2 Limitations):**
+> **Option 2 (Agent-Only Mode / prompt-only installation)** does not configure local binaries or the Node.js execution engine on your machine. **Therefore, all local offline document parsing features (HWP/HWPX, PDF, Image OCR, and MS Office files parsing) are completely unavailable.**
+> To utilize these local resource parsing features, you must install the full core engine via **Option 1 (Full Core Mode)**.
 
 ---
 
@@ -54,7 +55,7 @@ Geultaraero is optimized for parsing local resource materials. Simply create an 
 
 - **HWP/HWPX:** Automatically downloads parsers to extract plain text.
 - **PDF & Image:** For non-extractable documents, the agent splits PDF files (`pdf2image`), extracts text via OCR (`tesseract`), and, if needed, directly inspects the images using Vision LLMs.
-- **DOCX/XLSX:** Parses text and tables into structured Markdown tables and paragraphs.
+- **DOCX/PPTX/XLSX (MS Office):** Directly parses XML document nodes from the zip file without external libraries, extracting text, slide text, and sheets into standard Markdown paragraphs and tables.
 
 ---
 

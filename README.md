@@ -33,9 +33,10 @@ Configure the Geultaraero system using the zero-dependency Agent-Only Mode (Prio
 https://raw.githubusercontent.com/WizMasia/Geultaraero/refs/heads/main/docs/AGENT_SETUP_GUIDE.md
 Create the .agent/ directory and setup only the rule files for my AI IDE without installing any Node.js packages or binaries.
 ```
-> ⚠️ **Warning (경고):** 
-> Option 2 (Agent-Only Mode)는 로컬 바이너리 및 Node.js 실행 엔진을 컴퓨터에 구성하지 않으므로, 로컬 HWP/HWPX 파싱 및 템플릿 생성 기능(`rhwp` CLI 연동 기능)을 사용할 수 없습니다. 이 기능들을 로컬 및 오프라인 환경에서 모두 활용하려면 **Option 1**을 통해 전체 코어 엔진을 구성해 주세요.
-> Since Option 2 (Agent-Only Mode) does not configure local binaries or the Node.js execution engine on your machine, local HWP/HWPX parsing and template generation features (via `rhwp` CLI integration) are unavailable. To utilize these features locally and offline, please configure the full core engine via **Option 1**.
+> ⚠️ **CRITICAL WARNING / 중요 경고 (Option 2 사용자 제약 사항):**
+> **Option 2 (Agent-Only Mode / 프롬프트 단독 설치)**를 선택하여 Node.js CLI 패키지나 로컬 실행 엔진(CLI) 없이 프롬프트 규칙 파일들만 수동 구성하는 경우, **모든 로컬 오프라인 파일 파싱 분석 기능(HWP/HWPX, PDF, 이미지 OCR, MS 오피스 파일 파싱 등)을 전혀 사용할 수 없습니다.**
+> 이 파일 파싱 기능들과 로컬/오프라인 환경 분석 연동 기능을 온전히 활용하기 위해서는 반드시 **Option 1 (Full Core Mode)**을 선택하여 전체 엔진을 설치해 주셔야 합니다.
+> *Since Option 2 (Agent-Only Mode) does not configure local binaries or the Node.js execution engine on your machine, all local offline document parsing features (HWP/HWPX, PDF, Image OCR, MS Office files) are completely unavailable. To use these features, you must install the full core engine via Option 1.*
 
 ---
 
@@ -68,7 +69,7 @@ curl -fsSL https://raw.githubusercontent.com/WizMasia/Geultaraero/main/install.s
 
 - **HWP/HWPX:** 전용 파서를 자동 다운로드하여 텍스트를 추출합니다.
 - **PDF & Image:** 텍스트 추출이 불가능한 이미지형 문서의 경우, 이미지를 분할(`pdf2image`)하고 OCR(`tesseract`)을 통해 변환하며, 필요시 Vision 모델을 통해 이미지를 직접 분석합니다.
-- **DOCX/XLSX:** 텍스트 및 표 데이터를 구조화하여 완벽한 마크다운 서식으로 변환합니다.
+- **DOCX/PPTX/XLSX (MS 오피스):** ZIP 내부 XML 본문 노드를 직접 탐색하여 외부 종속 라이브러리 없이 텍스트, 슬라이드 텍스트, 시트 표 데이터를 완벽한 마크다운 문단 및 그리드 표(Markdown Table) 구조로 복원합니다.
 
 ---
 

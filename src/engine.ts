@@ -109,14 +109,14 @@ export class WorkflowEngine {
       const promises = step.agents.map(async agentId => {
         const runner = this.runners.get(agentId);
         if (!runner) throw new Error(`Agent ${agentId} not found.`);
-        await runner.execute(); 
+        await this.executeAgent(runner); 
       });
       await Promise.all(promises);
     } else {
       for (const agentId of step.agents) {
         const runner = this.runners.get(agentId);
         if (runner) {
-          await runner.execute();
+          await this.executeAgent(runner);
           
           // 만약 이 에이전트가 Reviewer 라면 호스트가 채점한 점수를 확인
           if (runner instanceof ReviewerAgent && step.threshold_score) {
@@ -143,6 +143,105 @@ export class WorkflowEngine {
     }
     
     return allSuccess;
+  }
+
+  /**
+   * Executes the agent runner. If the runner is a ParserAgent, it dynamically spawns
+   * dedicated child parser agents per target file for parallel and isolated processing.
+   * 에이전트를 가동합니다. 가동할 에이전트가 ParserAgent인 경우, 파일별로 전담 하위 파서 에이전트들을
+   * 동적으로 할당하여 병렬로 격리 파싱을 수행하게 조율합니다.
+   */
+  private async executeAgent(runner: BaseAgent): Promise<void> {
+    if (runner.role === 'parser') {
+      let sourceFiles: string[] = [];
+      const workspaceDir = this.config.global_settings.workspace_dir;
+      
+      // Collect input source documents from representative status
+      // 대표 에이전트의 이전 기획서 상태에서 파싱 대상 파일 목록 수집
+      this.config.agents.forEach(agent => {
+        if (agent.role === 'representative') {
+          const repStatusPath = path.join(workspaceDir, agent.id, 'current_status.md');
+          if (fs.existsSync(repStatusPath)) {
+            try {
+              const { frontmatter } = readMarkdownFile(repStatusPath);
+              if (frontmatter.data_paths && Array.isArray(frontmatter.data_paths)) {
+                sourceFiles = frontmatter.data_paths as string[];
+              }
+            } catch (e) {}
+          }
+        }
+      });
+
+      if (sourceFiles.length > 0) {
+        Logger.info(`[Engine] Spawning ${sourceFiles.length} independent ParserAgent instances per file...`);
+        
+        const parserPromises = sourceFiles.map(async (filePath, index) => {
+          const dynamicId = `${runner.id}-file-${index}`;
+          const dynamicAgent = new ParserAgent(
+            dynamicId,
+            'parser',
+            runner.persona,
+            workspaceDir
+          );
+
+          const dynamicAgentDir = path.join(workspaceDir, dynamicId);
+          if (!fs.existsSync(dynamicAgentDir)) {
+            fs.mkdirSync(dynamicAgentDir, { recursive: true });
+          }
+
+          // Write isolated single-file instruction
+          // 단일 파일 파싱을 명령하는 격리된 지시 메시지 파일 기록
+          const msgContent = `---
+sender: ${runner.id}
+receiver: ${dynamicId}
+message_type: INSTRUCTION
+status: Pending
+data_paths:
+  - ${filePath}
+---
+Please parse this document file using the parser pipeline or any custom skills/MCP tools.`;
+          
+          const msgPath = path.join(dynamicAgentDir, `msg_${runner.id}_parse.md`);
+          fs.writeFileSync(msgPath, msgContent, 'utf-8');
+
+          // Run child agent
+          // 하위 에이전트 실행
+          await dynamicAgent.execute();
+
+          // Read result paths
+          // 파싱 결과 경로 취득
+          const statusPath = path.join(dynamicAgentDir, 'current_status.md');
+          if (fs.existsSync(statusPath)) {
+            try {
+              const { frontmatter } = readMarkdownFile(statusPath);
+              return (frontmatter.data_paths as string[]) || [];
+            } catch (e) {}
+          }
+          return [];
+        });
+
+        const results = await Promise.all(parserPromises);
+        const aggregatedParsedFiles = results.flat();
+
+        // Publish Completed status via master agent
+        // 마스터 에이전트 이름으로 최종 Completed 상태 발행 및 결과 경로 취합 보관
+        const masterDir = path.join(workspaceDir, runner.id);
+        if (!fs.existsSync(masterDir)) {
+          fs.mkdirSync(masterDir, { recursive: true });
+        }
+        
+        runner['publishStatus'](
+          'Completed',
+          'STATUS_UPDATE',
+          `Successfully parsed ${sourceFiles.length} file(s) dynamically using dedicated sub-agents.`,
+          { data_paths: aggregatedParsedFiles }
+        );
+      } else {
+        await runner.execute();
+      }
+    } else {
+      await runner.execute();
+    }
   }
 
   private cleanup(): void {

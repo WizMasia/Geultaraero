@@ -28,9 +28,10 @@ docs/
 .git_backup/
 
 # Compiled Standalone Binaries / 컴파일된 릴리즈 바이너리 파일
-geultaraero-macos
-geultaraero-linux
-geultaraero-win.exe
+geultaraero-*
+glro-*
+binaries/
+bin/
 
 # Temp directories for testing & runtime / 테스트 및 런타임 임시 디렉토리
 .tmp_jest/

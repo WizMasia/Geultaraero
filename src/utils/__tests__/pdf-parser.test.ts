@@ -25,6 +25,13 @@ describe('PdfParser tests / PDF 파서 테스트', () => {
     await expect(parser.parse('non_existent.pdf')).rejects.toThrow('File not found');
   });
 
+  it('should fall back to descriptive guide error if binaries are missing in offline mode / 오프라인 모드에서 바이너리 누락 시 친절한 설명형 가이드 예외를 던져야 함', async () => {
+    // Force offline mode and simulate missing binary by providing mock config
+    // 오프라인 모드를 강제하고 바이너리가 없는 상황을 시뮬레이션하는 설정을 주입합니다.
+    const parser = new PdfParser({ enableOfflineMode: true, forceMissingBinaries: true });
+    await expect(parser.parse(samplePdfPath)).rejects.toThrow('poppler-utils binaries not found');
+  });
+
   it('should be registered to ParserFactory and support .pdf / ParserFactory에 성공적으로 등록되고 .pdf를 처리해야 함', () => {
     const parser = ParserFactory.getParser('dummy.pdf');
     expect(parser).toBeDefined();

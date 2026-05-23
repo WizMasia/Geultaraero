@@ -8,6 +8,7 @@ import { ParserFactory } from './utils/document-parser';
 import { HwpParser } from './utils/hwp-parser';
 import { ImageParser } from './utils/image-parser';
 import { PdfParser } from './utils/pdf-parser';
+import { OfficeParser } from './utils/office-parser';
 
 async function main() {
   Logger.info('Initializing Agentic Report Writing Supporter CLI...');
@@ -17,6 +18,7 @@ async function main() {
   ParserFactory.registerParser(new HwpParser());
   ParserFactory.registerParser(new ImageParser());
   ParserFactory.registerParser(new PdfParser());
+  ParserFactory.registerParser(new OfficeParser());
 
 
   // 1. 설정 파일 경로 확인 (인자로 받거나 기본값)

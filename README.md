@@ -33,6 +33,9 @@ Configure the Geultaraero system using the zero-dependency Agent-Only Mode (Prio
 https://raw.githubusercontent.com/WizMasia/Geultaraero/refs/heads/main/docs/AGENT_SETUP_GUIDE.md
 Create the .agent/ directory and setup only the rule files for my AI IDE without installing any Node.js packages or binaries.
 ```
+> ⚠️ **Warning (경고):** 
+> Option 2 (Agent-Only Mode)는 로컬 바이너리 및 Node.js 실행 엔진을 컴퓨터에 구성하지 않으므로, 로컬 HWP/HWPX 파싱 및 템플릿 생성 기능(`rhwp` CLI 연동 기능)을 사용할 수 없습니다. 이 기능들을 로컬 및 오프라인 환경에서 모두 활용하려면 **Option 1**을 통해 전체 코어 엔진을 구성해 주세요.
+> Since Option 2 (Agent-Only Mode) does not configure local binaries or the Node.js execution engine on your machine, local HWP/HWPX parsing and template generation features (via `rhwp` CLI integration) are unavailable. To utilize these features locally and offline, please configure the full core engine via **Option 1**.
 
 ---
 

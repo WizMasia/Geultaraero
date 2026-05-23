@@ -32,7 +32,12 @@ export class ParserAgent extends BaseAgent {
    * @param instructionPath Path to the instruction markdown file / 지시서 마크다운 파일 경로 (선택)
    */
   public async execute(instructionPath?: string): Promise<void> {
-    this.publishStatus('In Progress', 'STATUS_UPDATE', 'Starting document parser agent execution...');
+    const skillInstruction = 
+      '※ [IMPORTANT INSTRUCTION FOR PARSING / 파싱 중요 규칙]:\n' +
+      'If there are custom parsing skills (e.g., pdf-to-markdown, hwp-to-markdown) or any custom MCP server tools installed in the workspace/environment, the agent MUST prioritize using those skills or MCP tools to parse the document files.\n' +
+      '만약 워크스페이스 또는 환경 내에 사용자 정의 파싱 스킬(예: pdf-to-markdown, hwp-to-markdown)이나 커스텀 MCP 서버 도구가 설치되어 있는 경우, 에이전트는 반드시 해당 스킬 또는 MCP 도구를 최우선으로 구동하여 문서 파싱을 처리해야 합니다.';
+
+    this.publishStatus('In Progress', 'STATUS_UPDATE', `Starting document parser agent execution...\n\n${skillInstruction}`);
 
     let targetInstructionPath: string | undefined = instructionPath;
 

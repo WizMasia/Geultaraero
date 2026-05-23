@@ -92,4 +92,14 @@ Please parse these incoming raw files.`;
     expect(parsedContent).toContain('Hello Parser Agent Document');
     expect(content).toContain('Successfully parsed');
   });
+
+  it('should include instructions to prioritize custom installed skills or MCP tools / 설치된 커스텀 스킬이나 MCP 도구를 우선순위로 사용하도록 명시해야 함', async () => {
+    const agentDir = path.join(testWorkspace, 'parser-test-id');
+    const statusPath = path.join(agentDir, 'current_status.md');
+
+    const { content } = readMarkdownFile(statusPath);
+    expect(content).toContain('custom parsing skills');
+    expect(content).toContain('MCP');
+    expect(content).toContain('우선');
+  });
 });

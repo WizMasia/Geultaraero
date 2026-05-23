@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
+import { BinaryResolver } from './binary-resolver';
 
 const execFileAsync = promisify(execFile);
 
@@ -10,27 +11,19 @@ const execFileAsync = promisify(execFile);
  * 현재 OS 및 아키텍처에 근거하여 rhwp 바이너리의 로컬 실행 경로를 반환합니다.
  */
 export function getRhwpBinaryPath(): string {
-  const platform = process.platform;
-  const arch = process.arch;
-  let subDir = '';
-
-  if (platform === 'darwin') {
-    // macOS Support (Apple Silicon and Intel)
-    // macOS 지원 (M 시리즈 실리콘 및 인텔)
-    subDir = arch === 'arm64' ? 'macos-arm64' : 'macos-x64';
-  } else if (platform === 'linux' && arch === 'x64') {
-    // Linux Support (x64)
-    // 리눅스 지원 (x64)
-    subDir = 'linux-x64';
-  } else if (platform === 'win32' && arch === 'x64') {
-    // Windows Support (x64)
-    // 윈도우 지원 (x64)
-    subDir = 'win-x64';
-  } else {
-    throw new Error(`Unsupported platform/architecture: ${platform}/${arch}`);
+  const resolved = BinaryResolver.resolve('rhwp');
+  if (resolved) {
+    return resolved;
   }
 
+  // Fallback for backwards compatibility and detailed error path reporting
+  const platform = process.platform;
   const ext = platform === 'win32' ? '.exe' : '';
+  let subDir = 'macos-arm64';
+  try {
+    subDir = BinaryResolver.getSubDir();
+  } catch (e) {}
+
   return path.join(process.cwd(), 'bin', subDir, `rhwp${ext}`);
 }
 

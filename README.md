@@ -42,14 +42,15 @@ Create the .agent/ directory and setup only the rule files for my AI IDE without
 
 ### 수동 설치 (Manual Setup)
 
-**[macOS / Linux]**
+각 운영체제(Windows, macOS, Linux) 환경에서 사전 컴파일된 단일 실행 파일(Standalone Binary)을 내려받아 설치하고, 외부 동반 파서 유틸리티(`rhwp`, `pdftotext`, `pdftoppm`)를 수동 연동하여 완벽한 오프라인 환경을 구성하는 방법은 아래의 상세 가이드라인 문서를 참조하시기 바랍니다.
+
+👉 [**글타래로 환경별 상세 설치 가이드라인 (Windows, macOS, Linux) 바로가기**](docs/INSTALL_GUIDE.md)
+
+**[macOS / Linux 간편 설치 스크립트]**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/WizMasia/Geultaraero/main/install.sh | bash
 ```
 > **Smart Cleanup:** 설치 스크립트 실행 시 사용 중인 터미널 환경을 분석하여 현재 IDE에 맞는 설정 파일 1개만 남기고 불필요한 규칙 파일들을 정리하며, 프로젝트 내 `.agent/` 폴더를 생성하여 공통 에이전트 설정(`AGENT.md`) 및 동작 세부 조율을 위한 `settings.json`을 자동 구축합니다.
-
-**[Windows]**
-[Releases 페이지](https://github.com/WizMasia/Geultaraero/releases)에서 사전 컴파일된 `.exe` 바이너리를 다운로드하여 실행하고 환경 변수(Path)에 추가하는 것을 권장합니다.
 
 ---
 

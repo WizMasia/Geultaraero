@@ -39,6 +39,14 @@ Create the .agent/ directory and setup only the rule files for my AI IDE without
 
 ---
 
+### Manual Setup (Pre-compiled Standalone Binaries)
+
+For users who want to run the standalone binaries and configure companions (`rhwp`, `pdftotext`, `pdftoppm`) manually under completely offline/isolated environments, please follow the detailed installation guide below:
+
+👉 [**Detailed Standalone Binary Installation Guide (Windows, macOS, Linux)**](docs/INSTALL_GUIDE.md)
+
+---
+
 ## 3. Key Features
 
 - **Offline Survival Mode (Network-Disconnected Support):** If network access is cut or external search is unavailable, the agent stops web searching and relies strictly on documents in the local `input_materials/` directory.

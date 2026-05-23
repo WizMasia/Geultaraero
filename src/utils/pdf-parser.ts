@@ -5,6 +5,7 @@ import * as fs from 'fs';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import { TempHelper } from './temp-helper';
+import { BinaryResolver } from './binary-resolver';
 
 const execFileAsync = promisify(execFile);
 
@@ -179,39 +180,6 @@ export class PdfParser implements DocumentParser {
    * 로컬 바이너리 경로를 확인합니다. bin/ 하위 디렉토리를 먼저 살피고 시스템 PATH 환경을 폴백으로 탐색합니다.
    */
   private resolveBinaryPath(binName: string): string | null {
-    const platform = process.platform;
-    const arch = process.arch;
-    let subDir = '';
-
-    if (platform === 'darwin') {
-      subDir = arch === 'arm64' ? 'macos-arm64' : 'macos-x64';
-    } else if (platform === 'linux' && arch === 'x64') {
-      subDir = 'linux-x64';
-    } else if (platform === 'win32' && arch === 'x64') {
-      subDir = 'win-x64';
-    }
-
-    const ext = platform === 'win32' ? '.exe' : '';
-    const localPath = subDir ? path.join(process.cwd(), 'bin', subDir, `${binName}${ext}`) : '';
-
-    // 1. First priority: local workspace bin directory
-    // 1순위: 워크스페이스 내 로컬 bin 폴더
-    if (localPath && fs.existsSync(localPath)) {
-      return localPath;
-    }
-
-    // 2. Second priority: system environment PATH
-    // 2순위: 시스템 전역 환경 PATH 탐색
-    try {
-      const checkCmd = platform === 'win32' ? 'where' : 'which';
-      const stdout = require('child_process').execSync(`${checkCmd} ${binName}`, { stdio: [] }).toString().trim();
-      if (stdout && fs.existsSync(stdout)) {
-        return stdout;
-      }
-    } catch (e) {
-      // Command check failed (not in system PATH)
-    }
-
-    return null;
+    return BinaryResolver.resolve(binName);
   }
 }

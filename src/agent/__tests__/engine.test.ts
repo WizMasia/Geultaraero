@@ -43,7 +43,7 @@ describe('WorkflowEngine dynamic parser spawning tests / 워크플로우 엔진 
       global_settings: {
         workspace_dir: testWorkspace,
         language: 'ko',
-        generate_work_summary: false,
+        generate_work_summary: true,
       },
       agents: [
         {

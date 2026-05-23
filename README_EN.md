@@ -56,6 +56,8 @@ Geultaraero is optimized for parsing local resource materials. Simply create an 
 - **HWP/HWPX:** Automatically downloads parsers to extract plain text.
 - **PDF & Image:** For non-extractable documents, the agent splits PDF files (`pdf2image`), extracts text via OCR (`tesseract`), and, if needed, directly inspects the images using Vision LLMs.
 - **DOCX/PPTX/XLSX (MS Office):** Directly parses XML document nodes from the zip file without external libraries, extracting text, slide text, and sheets into standard Markdown paragraphs and tables.
+- **Dynamic Parser Spawning:** If multiple reference files are provided, the system dynamically spawns dedicated, isolated sub-agents (`[ID]-file-[index]`) to parse each document in parallel, aggregating results seamlessly back into the master parser state.
+- **Custom Skill & MCP Prioritization:** If there are custom parsing skills or MCP (Model Context Protocol) server tools configured in the environment, the parser agent automatically prioritizes invoking those skills/MCP tools to complete document parsing workloads.
 
 ---
 

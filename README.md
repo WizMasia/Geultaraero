@@ -70,6 +70,8 @@ curl -fsSL https://raw.githubusercontent.com/WizMasia/Geultaraero/main/install.s
 - **HWP/HWPX:** 전용 파서를 자동 다운로드하여 텍스트를 추출합니다.
 - **PDF & Image:** 텍스트 추출이 불가능한 이미지형 문서의 경우, 이미지를 분할(`pdf2image`)하고 OCR(`tesseract`)을 통해 변환하며, 필요시 Vision 모델을 통해 이미지를 직접 분석합니다.
 - **DOCX/PPTX/XLSX (MS 오피스):** ZIP 내부 XML 본문 노드를 직접 탐색하여 외부 종속 라이브러리 없이 텍스트, 슬라이드 텍스트, 시트 표 데이터를 완벽한 마크다운 문단 및 그리드 표(Markdown Table) 구조로 복원합니다.
+- **동적 격리 파싱 파이프라인 (Dynamic Parser Spawning):** 여러 개의 자료 파일이 입력되면 단일 에이전트가 이를 순차 파싱하지 않고, 파일 개수만큼 독립 격리된 하위 파서 에이전트를 동적으로 즉석 Spawning하여 처리한 뒤 결과 경로를 유기적으로 병합 수집합니다.
+- **스킬 및 MCP 최우선 연동 (Custom Skill & MCP Prioritization):** 사용자 환경에 별도 구성된 전용 파싱 스킬(Skill)이나 MCP(Model Context Protocol) 서버 도구가 존재하는 경우, 기본 분석 로직에 앞서 해당 스킬 또는 MCP 도구를 최우선적으로 사용하여 문서 변환을 완료하도록 유도합니다.
 
 ---
 
